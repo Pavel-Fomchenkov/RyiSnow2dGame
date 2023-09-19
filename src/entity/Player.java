@@ -114,20 +114,28 @@ public class Player extends Entity {
             String objectName = gp.obj[i].name;
             switch (objectName) {
                 case "Key":
+                    gp.playSE(1);
                     hasKey++;
                     gp.obj[i] = null;
                     System.out.println("Key: " + hasKey);
                     break;
                 case "Door":
                     if (hasKey > 0) {
+                        gp.playSE(3);
                         gp.obj[i] = null;
                         hasKey--;
                         System.out.println("Key: " + hasKey);
                     }
                     break;
+                case "Boots":
+                    gp.playSE(2);
+                    speed += 1;
+                    gp.obj[i] = null;
+                    break;
             }
         }
     }
+
     public void draw(Graphics2D g2) {
 //        g2.setColor(Color.white);
 //        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
