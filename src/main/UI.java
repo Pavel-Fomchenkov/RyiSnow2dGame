@@ -256,7 +256,7 @@ public class UI {
         int width = gp.screenWidth - (gp.tileSize * 4);
         int height = gp.tileSize * 4;
         drawSubWindow(x, y, width, height);
-        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 24F));
+        g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 26F));
         x += gp.tileSize / 3 * 2;
         y += gp.tileSize;
         for (String line : currentDialogue.split("\n")) {
