@@ -2,11 +2,12 @@ package main;
 
 import entity.Entity;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Comparator;
 
 public class GamePanel extends JPanel implements Runnable {
     // SCREEN SETTINGS
@@ -37,8 +38,9 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
-    public SuperObject obj[] = new SuperObject[10];
+    public Entity obj[] = new Entity[10];
     public Entity npc[] = new Entity[10];
+    ArrayList<Entity> entityList = new ArrayList<>();
     //GAME STATE
     public int gameState;
     public final int titleState = 0;
@@ -153,23 +155,27 @@ public class GamePanel extends JPanel implements Runnable {
         } else {
             // TILE
             tileM.draw(g2);
-
-            //OBJ DRAW
-            for (int i = 0; i < obj.length; i++) {
-                if (obj[i] != null) {
-                    obj[i].draw(g2, this);
+            // ENTITY
+            entityList.add(player);
+            for (Entity entity : npc) {
+                if (entity != null) {
+                    entityList.add(entity);
                 }
             }
-
-            // NPC
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].draw(g2);
+            for (Entity entity : obj) {
+                if (entity != null) {
+                    entityList.add(entity);
                 }
             }
-
-            // PLAYER
-            player.draw(g2);
+            // SORT
+            entityList.sort(Comparator.comparingInt(e -> e.worldY));
+            // DRAW ENTITIES
+            for (int i = 0; i < entityList.size(); i++) {
+                entityList.get(i).draw(g2);
+            }
+            // EMPTY ENTITYLIST
+            entityList.clear();
+            // UI
             ui.draw(g2);
         }
         // DEBUG
@@ -191,7 +197,7 @@ public class GamePanel extends JPanel implements Runnable {
         music.loop();
     }
 
-    public void stopVusic() {
+    public void stopMusic() {
         music.stop();
     }
 
