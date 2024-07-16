@@ -40,6 +40,8 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
+//        worldX = gp.tileSize * 10;
+//        worldY = gp.tileSize * 13;
         speed = 4;
         direction = "down";
 
@@ -49,14 +51,14 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
-            up1 = setup("/player/boy_up_1");
-            up2 = setup("/player/boy_up_2");
-            down1 = setup("/player/boy_down_1");
-            down2 = setup("/player/boy_down_2");
-            left1 = setup("/player/boy_left_1");
-            left2 = setup("/player/boy_left_2");
-            right1 = setup("/player/boy_right_1");
-            right2 = setup("/player/boy_right_2");
+        up1 = setup("/player/boy_up_1");
+        up2 = setup("/player/boy_up_2");
+        down1 = setup("/player/boy_down_1");
+        down2 = setup("/player/boy_down_2");
+        left1 = setup("/player/boy_left_1");
+        left2 = setup("/player/boy_left_2");
+        right1 = setup("/player/boy_right_1");
+        right2 = setup("/player/boy_right_2");
     }
 
     public void update() {
@@ -84,6 +86,10 @@ public class Player extends Entity {
             // CHECK NPC COLLISION
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
+
+            // CHECK MONSTER COLLISION
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            contactMonster(monsterIndex);
 
             // CHECK EVENT
             gp.eHandler.checkEvent();
@@ -114,6 +120,14 @@ public class Player extends Entity {
                     spriteNum = 1;
                 }
                 spriteCounter = 0;
+            }
+        }
+        // This needs to be outside of key if statement!
+        if (invincible == true) {
+            invincibleCounter++;
+            if (invincibleCounter > 60) {
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
     }
@@ -152,6 +166,7 @@ public class Player extends Entity {
 //            }
         }
     }
+
     public void interactNPC(int i) {
         if (i != 999) {
             if (gp.keyH.enterPressed == true) {
@@ -160,6 +175,17 @@ public class Player extends Entity {
             }
         }
     }
+
+    public void contactMonster(int i) {
+        if (i != 999) {
+            if (invincible == false) {
+                life -= 1;
+                invincible = true;
+            }
+
+        }
+    }
+
 
 /*    public void draw(Graphics2D g2) {
 //        g2.setColor(Color.white);

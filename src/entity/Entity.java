@@ -20,6 +20,8 @@ public class Entity {
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collisionOn = false;
     public int actionLockCounter;
+    public boolean invincible = false;
+    public int invincibleCounter = 0;
     String[] dialogues = new String[20];
     int dialogueIndex = 0;
     public BufferedImage image, image2, image3;
@@ -64,6 +66,8 @@ public class Entity {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
+        gp.cChecker.checkEntity(this, gp.npc);
+        gp.cChecker.checkEntity(this, gp.monster);
         gp.cChecker.checkPlayer(this);
         // IF COLLISION IS FALSE, ENTITY CAN MOVE
         if (collisionOn == false) {
@@ -81,15 +85,15 @@ public class Entity {
                     worldX += speed;
                     break;
             }
-            spriteCounter++;
-            if (spriteCounter > 12) {
-                if (spriteNum == 1) {
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 1;
-                }
-                spriteCounter = 0;
+        }
+        spriteCounter++;
+        if (spriteCounter > 12) {
+            if (spriteNum == 1) {
+                spriteNum = 2;
+            } else if (spriteNum == 2) {
+                spriteNum = 1;
             }
+            spriteCounter = 0;
         }
     }
 
