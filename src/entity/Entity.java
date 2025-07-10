@@ -10,25 +10,29 @@ import java.io.IOException;
 
 public class Entity {
     GamePanel gp;
-    public int worldX, worldY;
-    public int speed;
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
-    public String direction = "down";
-    public int spriteCounter = 0;
-    public int spriteNum = 1;
+    public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
+    public BufferedImage image, image2, image3;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public int solidAreaDefaultX, solidAreaDefaultY;
-    public boolean collisionOn = false;
-    public int actionLockCounter;
-    public boolean invincible = false;
-    public int invincibleCounter = 0;
-    String[] dialogues = new String[20];
-    int dialogueIndex = 0;
-    public BufferedImage image, image2, image3;
-    public String name;
     public boolean collision = false;
-
-    // CHARACTER STATUS
+    String[] dialogues = new String[20];
+    // STATE
+    public int worldX, worldY;
+    public String direction = "down";
+    public int spriteNum = 1;
+    int dialogueIndex = 0;
+    public boolean collisionOn = false;
+    public boolean invincible = false;
+    boolean attacking = false;
+    // COUNTER
+    public int spriteCounter = 0;
+    public int actionLockCounter;
+    public int invincibleCounter = 0;
+    // CHARACTER ATTRIBUTES
+    public int type; // 0 = player, 1 = npc, 2 = monster
+    public String name;
+    public int speed;
     public int maxLife;
     public int life;
 
@@ -68,9 +72,16 @@ public class Entity {
         gp.cChecker.checkObject(this, false);
         gp.cChecker.checkEntity(this, gp.npc);
         gp.cChecker.checkEntity(this, gp.monster);
-        gp.cChecker.checkPlayer(this);
+        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+
+        if (this.type == 2 && contactPlayer) {
+            if (!gp.player.invincible) {
+                gp.player.life -= 1;
+                gp.player.invincible = true;
+            }
+        }
         // IF COLLISION IS FALSE, ENTITY CAN MOVE
-        if (collisionOn == false) {
+        if (!collisionOn) {
             switch (direction) {
                 case "up":
                     worldY -= speed;
@@ -109,49 +120,102 @@ public class Entity {
 
             switch (direction) {
                 case "up":
-                    if (spriteNum == 1) {
-                        image = up1;
+                    if (!attacking) {
+                        if (spriteNum == 1) {
+                            image = up1;
+                        }
+                        if (spriteNum == 2) {
+                            image = up2;
+                        }
                     }
-                    if (spriteNum == 2) {
-                        image = up2;
+                    if (attacking) {
+                        if (spriteNum == 1) {
+                            image = attackUp1;
+                        }
+                        if (spriteNum == 2) {
+                            image = attackUp2;
+                        }
                     }
                     break;
+
                 case "down":
-                    if (spriteNum == 1) {
-                        image = down1;
+                    if (!attacking) {
+                        if (spriteNum == 1) {
+                            image = down1;
+                        }
+                        if (spriteNum == 2) {
+                            image = down2;
+                        }
                     }
-                    if (spriteNum == 2) {
-                        image = down2;
+                    if (attacking) {
+                        if (spriteNum == 1) {
+                            image = attackDown1;
+                        }
+                        if (spriteNum == 2) {
+                            image = attackDown2;
+                        }
                     }
                     break;
                 case "left":
-                    if (spriteNum == 1) {
-                        image = left1;
+                    if (!attacking) {
+                        if (spriteNum == 1) {
+                            image = left1;
+                        }
+                        if (spriteNum == 2) {
+                            image = left2;
+                        }
                     }
-                    if (spriteNum == 2) {
-                        image = left2;
+                    if (attacking) {
+                        if (spriteNum == 1) {
+                            image = attackLeft1;
+                        }
+                        if (spriteNum == 2) {
+                            image = attackLeft2;
+                        }
                     }
                     break;
                 case "right":
-                    if (spriteNum == 1) {
-                        image = right1;
+                    if (!attacking) {
+                        if (spriteNum == 1) {
+                            image = right1;
+                        }
+                        if (spriteNum == 2) {
+                            image = right2;
+                        }
                     }
-                    if (spriteNum == 2) {
-                        image = right2;
+                    if (attacking) {
+                        if (spriteNum == 1) {
+                            image = attackRight1;
+                        }
+                        if (spriteNum == 2) {
+                            image = attackRight2;
+                        }
                     }
                     break;
             }
-            g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
+            if (invincible) {
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+            }
+
+            if (image == attackLeft1 || image == attackLeft2) {
+                g2.drawImage(image, screenX - gp.tileSize, screenY, null);
+            } else if (image == attackUp1 || image == attackUp2) {
+                g2.drawImage(image, screenX, screenY - gp.tileSize, null);
+            } else {
+                g2.drawImage(image, screenX, screenY, null);
+            }
+            // Reset alpha
+            g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }
     }
 
-    public BufferedImage setup(String imagePath) {
+    public BufferedImage setup(String imagePath, int width, int height) {
         UtilityTool uTool = new UtilityTool();
         BufferedImage image = null;
         try {
             image = ImageIO.read(getClass().getResourceAsStream(imagePath + ".png"));
-            image = uTool.scaleImage(image, gp.tileSize, gp.tileSize);
+            image = uTool.scaleImage(image, width, height);
         } catch (IOException e) {
             e.printStackTrace();
         }

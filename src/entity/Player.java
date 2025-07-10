@@ -35,6 +35,7 @@ public class Player extends Entity {
 
         setDefaultValues();
         getPlayerImage();
+        getPlayerAttackImage();
     }
 
     public void setDefaultValues() {
@@ -51,27 +52,40 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
-        up1 = setup("/player/boy_up_1");
-        up2 = setup("/player/boy_up_2");
-        down1 = setup("/player/boy_down_1");
-        down2 = setup("/player/boy_down_2");
-        left1 = setup("/player/boy_left_1");
-        left2 = setup("/player/boy_left_2");
-        right1 = setup("/player/boy_right_1");
-        right2 = setup("/player/boy_right_2");
+        up1 = setup("/player/boy_up_1", gp.tileSize, gp.tileSize);
+        up2 = setup("/player/boy_up_2", gp.tileSize, gp.tileSize);
+        down1 = setup("/player/boy_down_1", gp.tileSize, gp.tileSize);
+        down2 = setup("/player/boy_down_2", gp.tileSize, gp.tileSize);
+        left1 = setup("/player/boy_left_1", gp.tileSize, gp.tileSize);
+        left2 = setup("/player/boy_left_2", gp.tileSize, gp.tileSize);
+        right1 = setup("/player/boy_right_1", gp.tileSize, gp.tileSize);
+        right2 = setup("/player/boy_right_2", gp.tileSize, gp.tileSize);
+    }
+
+    public void getPlayerAttackImage() {
+        attackUp1 = setup("/player/boy_attack_up_1", gp.tileSize, gp.tileSize * 2);
+        attackUp2 = setup("/player/boy_attack_up_2", gp.tileSize, gp.tileSize * 2);
+        attackDown1 = setup("/player/boy_attack_down_1", gp.tileSize, gp.tileSize * 2);
+        attackDown2 = setup("/player/boy_attack_down_2", gp.tileSize, gp.tileSize * 2);
+        attackLeft1 = setup("/player/boy_attack_left_1", gp.tileSize * 2, gp.tileSize);
+        attackLeft2 = setup("/player/boy_attack_left_2", gp.tileSize * 2, gp.tileSize);
+        attackRight1 = setup("/player/boy_attack_right_1", gp.tileSize * 2, gp.tileSize);
+        attackRight2 = setup("/player/boy_attack_right_2", gp.tileSize * 2, gp.tileSize);
     }
 
     public void update() {
-        if (keyH.upPressed == true || keyH.downPressed ||
-                keyH.leftPressed || keyH.rightPressed) {
+        if (attacking) {
+            attacking();
+        } else if (keyH.upPressed || keyH.downPressed ||
+                keyH.leftPressed || keyH.rightPressed || keyH.enterPressed) {
 
-            if (keyH.upPressed == true) {
+            if (keyH.upPressed) {
                 direction = "up";
-            } else if (keyH.downPressed == true) {
+            } else if (keyH.downPressed) {
                 direction = "down";
-            } else if (keyH.leftPressed == true) {
+            } else if (keyH.leftPressed) {
                 direction = "left";
-            } else if (keyH.rightPressed == true) {
+            } else if (keyH.rightPressed) {
                 direction = "right";
             }
 
@@ -93,10 +107,10 @@ public class Player extends Entity {
 
             // CHECK EVENT
             gp.eHandler.checkEvent();
-            gp.keyH.enterPressed = false;
+
 
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
-            if (collisionOn == false) {
+            if (!collisionOn && !keyH.enterPressed) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -112,6 +126,9 @@ public class Player extends Entity {
                         break;
                 }
             }
+
+            gp.keyH.enterPressed = false;
+
             spriteCounter++;
             if (spriteCounter > 12) {
                 if (spriteNum == 1) {
@@ -123,12 +140,25 @@ public class Player extends Entity {
             }
         }
         // This needs to be outside of key if statement!
-        if (invincible == true) {
+        if (invincible) {
             invincibleCounter++;
             if (invincibleCounter > 60) {
                 invincible = false;
                 invincibleCounter = 0;
             }
+        }
+    }
+
+    public void attacking() {
+        spriteCounter++;
+        if (spriteCounter <= 5) {
+            spriteNum = 1;
+        } else if (spriteCounter <= 25) {
+            spriteNum = 2;
+        } else {
+            spriteNum = 1;
+            spriteCounter = 0;
+            attacking = false;
         }
     }
 
@@ -168,17 +198,19 @@ public class Player extends Entity {
     }
 
     public void interactNPC(int i) {
-        if (i != 999) {
-            if (gp.keyH.enterPressed == true) {
+        if (gp.keyH.enterPressed) {
+            if (i != 999) {
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
+            } else {
+                attacking = true;
             }
         }
     }
 
     public void contactMonster(int i) {
         if (i != 999) {
-            if (invincible == false) {
+            if (!invincible) {
                 life -= 1;
                 invincible = true;
             }
