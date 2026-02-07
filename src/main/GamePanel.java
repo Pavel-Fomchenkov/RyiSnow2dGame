@@ -146,13 +146,13 @@ public class GamePanel extends JPanel implements Runnable {
         }
     }
 
-    public void paintComponent(Graphics g) {    // Standard method name
+    public void paintComponent(Graphics g) {    // Standard name, invoked by Event Dispatch Thread from Java Swing component
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
 
         // DEBUG
         long drawStart = 0;
-        if (keyH.checkDrawTime == true) {
+        if (keyH.checkDrawTime) {
             drawStart = System.nanoTime();
         }
 
@@ -185,20 +185,22 @@ public class GamePanel extends JPanel implements Runnable {
             for (int i = 0; i < entityList.size(); i++) {
                 entityList.get(i).draw(g2);
             }
+
             // EMPTY ENTITYLIST
             entityList.clear();
+// TODO переделать DrawTime в FPS - не получится тк это 28 тысяч фпс, нужно в другом методе рассчитывать фпс
+            // DEBUG
+            if (keyH.checkDrawTime) {
+                long drawEnd = System.nanoTime();
+                long passed = drawEnd - drawStart;
+                g2.setColor(Color.white);
+                g2.drawString("Draw Time: " + passed, tileSize / 3, tileSize * 2);
+                g2.drawString("FPS: " + passed, tileSize / 3, tileSize * 2 + tileSize / 2);
+                System.out.println("Draw Time: " + passed);
+            }
             // UI
             ui.draw(g2);
         }
-        // DEBUG
-        if (keyH.checkDrawTime == true) {
-            long drawEnd = System.nanoTime();
-            long passed = drawEnd - drawStart;
-            g2.setColor(Color.white);
-            g2.drawString("Draw Time: " + passed, 10, 400);
-            System.out.println("Draw Time: " + passed);
-        }
-
         // Releases resources
         g2.dispose();
     }

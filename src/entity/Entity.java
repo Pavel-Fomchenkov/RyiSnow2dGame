@@ -14,6 +14,7 @@ public class Entity {
     public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
     public BufferedImage image, image2, image3;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int solidAreaDefaultX, solidAreaDefaultY;
     public boolean collision = false;
     String[] dialogues = new String[20];
@@ -106,12 +107,22 @@ public class Entity {
             }
             spriteCounter = 0;
         }
+
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > 40) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
+        }
     }
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
         int screenX = worldX - gp.player.worldX + gp.player.screenX;
         int screenY = worldY - gp.player.worldY + gp.player.screenY;
+        int tempScreenX = screenX;
+        int tempScreenY = screenY;
 
         if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
                 worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
@@ -129,6 +140,7 @@ public class Entity {
                         }
                     }
                     if (attacking) {
+                        tempScreenY -= gp.tileSize;
                         if (spriteNum == 1) {
                             image = attackUp1;
                         }
@@ -166,6 +178,7 @@ public class Entity {
                         }
                     }
                     if (attacking) {
+                        tempScreenX -= gp.tileSize;
                         if (spriteNum == 1) {
                             image = attackLeft1;
                         }
@@ -195,16 +208,9 @@ public class Entity {
             }
 
             if (invincible) {
-                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f));
+                g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4f));
             }
-
-            if (image == attackLeft1 || image == attackLeft2) {
-                g2.drawImage(image, screenX - gp.tileSize, screenY, null);
-            } else if (image == attackUp1 || image == attackUp2) {
-                g2.drawImage(image, screenX, screenY - gp.tileSize, null);
-            } else {
-                g2.drawImage(image, screenX, screenY, null);
-            }
+            g2.drawImage(image, tempScreenX, tempScreenY, null);
             // Reset alpha
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         }

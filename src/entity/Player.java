@@ -33,6 +33,9 @@ public class Player extends Entity {
         solidArea.width = 32;
         solidArea.height = 32;
 
+        attackArea.width = 36;
+        attackArea.height = 36;
+
         setDefaultValues();
         getPlayerImage();
         getPlayerAttackImage();
@@ -151,10 +154,47 @@ public class Player extends Entity {
 
     public void attacking() {
         spriteCounter++;
-        if (spriteCounter <= 5) {
+        if (spriteCounter <= 10) {
             spriteNum = 1;
-        } else if (spriteCounter <= 25) {
+        } else if (spriteCounter <= 20) {
             spriteNum = 2;
+
+            // Save the current worldX, worldY, solidArea
+            int currentWorldX = worldX;
+            int currentWorldY = worldY;
+            int solidAreaWidth = solidArea.width;
+            int solidAreaHeight = solidArea.height;
+
+            // Adjust player's worldX/Y for the attackArea
+            switch (direction) {
+                case "up":
+                    worldX += (solidAreaWidth - attackArea.width) / 2;
+                    worldY -= attackArea.height;
+                    break;
+                case "down":
+                    worldX += (solidAreaWidth - attackArea.width) / 2;
+                    worldY += attackArea.height;
+                    break;
+                case "left":
+                    worldX -= attackArea.width;
+                    worldY -= (solidAreaHeight - attackArea.height) / 2;
+                    break;
+                case "right":
+                    worldX += attackArea.width;
+                    worldY -= (solidAreaHeight - attackArea.height) / 2;
+                    break;
+            }
+            // attackArea becomes solidArea
+            solidAreaWidth = attackArea.width;
+            solidAreaHeight = attackArea.height;
+            // Check monster collision with the updated worldX, worldY and solidArea
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            damageMonster(monsterIndex);
+            // After checking collision, restore the original data
+            worldX = currentWorldX;
+            worldY = currentWorldY;
+            solidArea.width = solidAreaWidth;
+            solidArea.height = solidAreaHeight;
         } else {
             spriteNum = 1;
             spriteCounter = 0;
@@ -218,6 +258,17 @@ public class Player extends Entity {
         }
     }
 
+    public void damageMonster(int monsterIndex) {
+        if (monsterIndex != 999) {
+            if (!gp.monster[monsterIndex].invincible) {
+                gp.monster[monsterIndex].life -= 1;
+                gp.monster[monsterIndex].invincible = true;
+                if (gp.monster[monsterIndex].life <= 0) {
+                    gp.monster[monsterIndex] = null;
+                }
+            }
+        }
+    }
 
 /*    public void draw(Graphics2D g2) {
 //        g2.setColor(Color.white);
