@@ -25,6 +25,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     // FPS
     int FPS = 60;
+    int currentFPS = 0;
 
     // SYSTEM
     TileManager tileM = new TileManager(this);
@@ -111,6 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
             delta += (currentTime - lastTime) / drawInterval;
             timer += (currentTime - lastTime);
             lastTime = currentTime;
+
             if (delta >= 1) {
                 update();
                 repaint();
@@ -119,6 +121,7 @@ public class GamePanel extends JPanel implements Runnable {
             }
             if (timer >= 1000000000) {
                 System.out.println("FPS:" + drawCount);
+                currentFPS = drawCount;
                 drawCount = 0;
                 timer = 0;
             }
@@ -130,9 +133,9 @@ public class GamePanel extends JPanel implements Runnable {
             // PLAYER
             player.update();
             // NPC
-            for (int i = 0; i < npc.length; i++) {
-                if (npc[i] != null) {
-                    npc[i].update();
+            for (Entity entity : npc) {
+                if (entity != null) {
+                    entity.update();
                 }
             }
             for (int i = 0; i < monster.length; i++) {
@@ -187,20 +190,20 @@ public class GamePanel extends JPanel implements Runnable {
             // SORT
             entityList.sort(Comparator.comparingInt(e -> e.worldY));
             // DRAW ENTITIES
-            for (int i = 0; i < entityList.size(); i++) {
-                entityList.get(i).draw(g2);
+            for (Entity entity : entityList) {
+                entity.draw(g2);
             }
 
             // EMPTY ENTITYLIST
             entityList.clear();
-// TODO переделать DrawTime в FPS - не получится тк это 28 тысяч фпс, нужно в другом методе рассчитывать фпс
+
             // DEBUG
             if (keyH.checkDrawTime) {
                 long drawEnd = System.nanoTime();
                 long passed = drawEnd - drawStart;
                 g2.setColor(Color.white);
                 g2.drawString("Draw Time: " + passed, tileSize / 3, tileSize * 2);
-                g2.drawString("FPS: " + passed, tileSize / 3, tileSize * 2 + tileSize / 2);
+                g2.drawString("FPS: " + currentFPS, tileSize / 3, tileSize * 2 + tileSize / 2);
                 System.out.println("Draw Time: " + passed);
             }
             // UI
