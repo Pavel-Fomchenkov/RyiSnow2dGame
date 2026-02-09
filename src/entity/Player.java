@@ -14,7 +14,8 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
-//    public int hasKey = 0;
+    //    public int hasKey = 0;
+    public boolean attackCanceled = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
 
@@ -111,7 +112,6 @@ public class Player extends Entity {
             // CHECK EVENT
             gp.eHandler.checkEvent();
 
-
             // IF COLLISION IS FALSE, PLAYER CAN MOVE
             if (!collisionOn && !keyH.enterPressed) {
                 switch (direction) {
@@ -130,6 +130,14 @@ public class Player extends Entity {
                 }
             }
 
+            if (keyH.enterPressed && !attackCanceled) {
+                gp.playSE(7);
+                attacking = true;
+                spriteNum = 1;
+                spriteCounter = 0;
+            }
+
+            attackCanceled = false;
             gp.keyH.enterPressed = false;
 
             spriteCounter++;
@@ -240,14 +248,9 @@ public class Player extends Entity {
     public void interactNPC(int i) {
         if (gp.keyH.enterPressed) {
             if (i != 999) {
+                attackCanceled = true;
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
-            } else {
-                gp.playSE(7);
-                attacking = true;
-                // next lines fix attack sprite mess
-                spriteCounter = 0;
-                spriteNum = 1;
             }
         }
     }
