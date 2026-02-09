@@ -3,6 +3,8 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
+import object.OBJ_Shield_Wood;
+import object.OBJ_Sword_Normal;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -18,7 +20,6 @@ public class Player extends Entity {
     public boolean attackCanceled = false;
 
     public Player(GamePanel gp, KeyHandler keyH) {
-
         super(gp);
 
         this.keyH = keyH;
@@ -51,8 +52,26 @@ public class Player extends Entity {
         direction = "down";
 
         // PLAYER STATUS
+        level = 1;
         maxLife = 6;
         life = maxLife;
+        strength = 1;
+        dexterity = 1;
+        exp = 0;
+        nextLevelExp = 5;
+        coin = 0;
+        currentWeapon = new OBJ_Sword_Normal(gp);
+        currentShield = new OBJ_Shield_Wood(gp);
+        attack = getAttack();
+        defense = getDefense();
+    }
+
+    public int getAttack() {
+        return strength * currentWeapon.attackValue;
+    }
+
+    public int getDefense() {
+        return dexterity * currentShield.defenseValue;
     }
 
     public void getPlayerImage() {
