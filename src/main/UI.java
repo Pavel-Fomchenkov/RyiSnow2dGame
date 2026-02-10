@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 public class UI {
     GamePanel gp;
@@ -15,8 +16,8 @@ public class UI {
     //    BufferedImage keyImage;
     BufferedImage heart_full, heart_half, heart_blank;
     public boolean messageOn = false;
-    public String message = "";
-    //    int messageCounter = 0;
+    ArrayList<String> message = new ArrayList<>();
+    ArrayList<Integer> messageCounter = new ArrayList<>();
     public boolean gameFinished = false;
     //    double playTime;
 //    DecimalFormat dFormat = new DecimalFormat("#0.00");
@@ -47,9 +48,9 @@ public class UI {
         heart_blank = heart.image3;
     }
 
-    public void showMessage(String text) {
-        message = text;
-        messageOn = true;
+    public void addMessage(String text) {
+        message.add(text);
+        messageCounter.add(0);
     }
 
     public void draw(Graphics2D g2) {
@@ -111,6 +112,7 @@ public class UI {
         // PLAY STATE
         if (gp.gameState == gp.playState) {
             drawPlayerLife();
+            drawMessages();
         }
         // PAUSE STATE
         if (gp.gameState == gp.pauseState) {
@@ -155,6 +157,29 @@ public class UI {
             i++;
             x += gp.tileSize;
         }
+    }
+
+    public void drawMessages() {
+        int messageX = gp.tileSize;
+        int messageY = gp.tileSize * 8;
+        g2.setFont(g2.getFont().deriveFont(Font.BOLD, 20F));
+
+        for (int i = 0; i < message.size(); i++) {
+            if (message.get(i) != null) {
+                g2.setColor(Color.BLACK);
+                g2.drawString(message.get(i), messageX + 2, messageY + 2);
+                g2.setColor(Color.WHITE);
+                g2.drawString(message.get(i), messageX, messageY);
+                int counter = messageCounter.get(i) + 1;
+                messageCounter.set(i, counter);
+                messageY += 28;
+                if(messageCounter.get(i) > 180) {
+                    message.remove(i);
+                    messageCounter.remove(i);
+                }
+            }
+        }
+
     }
 
     public void drawTitleScreen() {
@@ -269,9 +294,9 @@ public class UI {
 
     public void drawCharacterScreen() {
         // CREATE A FRAME
-        final int frameX = gp.tileSize;
+        final int frameX = gp.tileSize / 2;
         final int frameY = gp.tileSize;
-        final int frameWidth = gp.tileSize * 5;
+        final int frameWidth = gp.tileSize * 6;
         final int frameHeight = gp.tileSize * 10;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
         // TEXT
@@ -310,47 +335,47 @@ public class UI {
         textY = frameY + gp.tileSize;
         value = String.valueOf(gp.player.level);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.life + "/" + gp.player.maxLife);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.strength);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.dexterity);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.attack);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.defense);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.exp);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.nextLevelExp);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += lineHeight;
         value = String.valueOf(gp.player.coin);
         textX = getXforAlignToRightText(value, tailX);
-        g2.drawString(value,textX, textY);
+        g2.drawString(value, textX, textY);
 
         textY += gp.tileSize / 4;
         g2.drawImage(gp.player.currentWeapon.down1, tailX - gp.tileSize, textY, null);

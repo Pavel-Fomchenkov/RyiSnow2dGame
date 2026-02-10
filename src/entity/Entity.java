@@ -103,7 +103,9 @@ public class Entity {
         if (this.type == 2 && contactPlayer) {
             if (!gp.player.invincible) {
                 gp.playSE(6);
-                gp.player.life -= 1;
+                int damage = attack - gp.player.defense;
+                if(damage <= 0) damage = 1;
+                gp.player.life -= damage;
                 gp.player.invincible = true;
             }
         }
@@ -297,5 +299,5 @@ public class Entity {
         }
         return image;
     }
-
+// TODO нужно сделать респаун мобов, подумать насчет респауна особых мобов (квестовых или боссов)
 }

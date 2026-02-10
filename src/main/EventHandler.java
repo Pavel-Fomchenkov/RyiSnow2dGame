@@ -1,7 +1,5 @@
 package main;
 
-import java.awt.*;
-
 public class EventHandler {
     GamePanel gp;
     EventRect eventRect[][];
@@ -91,8 +89,8 @@ public class EventHandler {
             gp.playSE(2);
             gp.ui.currentDialogue = "You drink the water.\nYour life has been recovered.";
             gp.player.life = gp.player.maxLife;
-            // heals only once
-            eventRect[col][row].eventDone = true;
+            gp.aSetter.setMonster();  // monsters respawn
+            eventRect[col][row].eventDone = true;  // heals only once
         }
     }
 

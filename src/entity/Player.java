@@ -58,7 +58,7 @@ public class Player extends Entity {
         strength = 1;
         dexterity = 1;
         exp = 0;
-        nextLevelExp = 5;
+        nextLevelExp = 3;
         coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gp);
         currentShield = new OBJ_Shield_Wood(gp);
@@ -278,7 +278,9 @@ public class Player extends Entity {
         if (i != 999) {
             if (!invincible) {
                 gp.playSE(6);
-                life -= 1;
+                int damage = gp.monster[i].attack - defense;
+                if (damage <= 0) damage = 1;
+                life -= damage;
                 invincible = true;
             }
         }
@@ -288,16 +290,43 @@ public class Player extends Entity {
         if (i != 999) {
             if (!gp.monster[i].invincible) {
                 gp.playSE(5);
-                gp.monster[i].life -= 1;
+                int damage = attack - gp.monster[i].defense;
+                if (damage < 0) damage = 0;
+                gp.monster[i].life -= damage;
+                gp.ui.addMessage(damage + " damage!");
                 gp.monster[i].invincible = true;
                 gp.monster[i].damageReaction();
                 if (gp.monster[i].life <= 0) {
                     gp.monster[i].dying = true;
+                    gp.ui.addMessage("Killed the " + gp.monster[i].name + "!");
+                    int mult = gp.monster[i].level - level;
+                    if (mult > 4) mult = 5;
+                    if (mult < 0) mult = 0;
+                    int expPlus = gp.monster[i].exp + gp.monster[i].exp * mult / 5;
+                    if (expPlus > 0) {
+                        exp += expPlus;
+                        gp.ui.addMessage(expPlus + " exp");
+                    }
+                    checkLevelUp();
                 }
             }
         }
     }
 
+    public void checkLevelUp() {
+        if (exp >= nextLevelExp) {
+            level++;
+            if (level % 5 == 0) maxLife += 2;
+            exp = exp - nextLevelExp;
+            nextLevelExp = nextLevelExp * 3 / 2;
+            if (level % 2 == 1) strength++;
+            if (level % 2 == 0) dexterity++;
+            attack = getAttack();
+            defense = getDefense();
+            gp.playSE(8);
+            gp.ui.addMessage("You achieved level " + level + "! You feel stronger.");
+        }
+    }
 /*    public void draw(Graphics2D g2) {
 //        g2.setColor(Color.white);
 //        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
