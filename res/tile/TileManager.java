@@ -93,7 +93,7 @@ public class TileManager {
             while (col < gp.maxWorldCol && row < gp.maxWorldRow) {
                 String line = br.readLine();
                 while (col < gp.maxWorldCol) {
-                    String numbers[] = line.split(" ");
+                    String[] numbers = line.split(" ");
                     int num = Integer.parseInt(numbers[col]);
                     mapTileNum[col][row] = num;
                     col++;
