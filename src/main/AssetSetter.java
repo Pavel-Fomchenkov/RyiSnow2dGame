@@ -33,6 +33,21 @@ public class AssetSetter {
         gp.obj[i].worldX = 11 * gp.tileSize;
         gp.obj[i].worldY = 33 * gp.tileSize;
 
+        i++;
+        gp.obj[i] = new OBJ_Coin_Bronze(gp);
+        gp.obj[i].worldX = gp.tileSize * 33;
+        gp.obj[i].worldY = gp.tileSize * 9;
+
+        i++;
+        gp.obj[i] = new OBJ_Heart(gp);
+        gp.obj[i].worldX = gp.tileSize * 35;
+        gp.obj[i].worldY = gp.tileSize * 9;
+
+        i++;
+        gp.obj[i] = new OBJ_ManaCrystal(gp);
+        gp.obj[i].worldX = gp.tileSize * 34;
+        gp.obj[i].worldY = gp.tileSize * 9;
+
 //        gp.obj[1] = new OBJ_Key(gp);
 //        gp.obj[1].worldX = 23 * gp.tileSize;
 //        gp.obj[1].worldY = 40 * gp.tileSize;
@@ -105,5 +120,6 @@ public class AssetSetter {
         gp.monster[i] = new MON_GreenSlime(gp);
         gp.monster[i].worldX = gp.tileSize * 23;
         gp.monster[i].worldY = gp.tileSize * 40;
+
     }
 }
