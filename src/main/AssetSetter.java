@@ -22,16 +22,16 @@ public class AssetSetter {
         gp.obj[i].worldY = 40 * gp.tileSize;
         i++;
         gp.obj[i] = new OBJ_Axe(gp);
-        gp.obj[i].worldX = 31 * gp.tileSize;
-        gp.obj[i].worldY = 21 * gp.tileSize;
+        gp.obj[i].worldX = 36 * gp.tileSize;
+        gp.obj[i].worldY = 40 * gp.tileSize;
         i++;
         gp.obj[i] = new OBJ_Shield_Blue(gp);
-        gp.obj[i].worldX = 35 * gp.tileSize;
-        gp.obj[i].worldY = 21 * gp.tileSize;
+        gp.obj[i].worldX = 38 * gp.tileSize;
+        gp.obj[i].worldY = 9 * gp.tileSize;
         i++;
         gp.obj[i] = new OBJ_Potion_Red(gp);
-        gp.obj[i].worldX = 36 * gp.tileSize;
-        gp.obj[i].worldY = 21 * gp.tileSize;
+        gp.obj[i].worldX = 11 * gp.tileSize;
+        gp.obj[i].worldY = 33 * gp.tileSize;
 
 //        gp.obj[1] = new OBJ_Key(gp);
 //        gp.obj[1].worldX = 23 * gp.tileSize;

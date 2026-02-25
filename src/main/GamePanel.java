@@ -6,6 +6,7 @@ import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -42,7 +43,8 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] obj = new Entity[10];
     public Entity[] npc = new Entity[10];
     public Entity[] monster = new Entity[20];
-    ArrayList<Entity> entityList = new ArrayList<>();
+    public List<Entity> projectileList = new ArrayList<>();
+    List<Entity> entityList = new ArrayList<>();
     //GAME STATE
     public int gameState;
     public final int titleState = 0;
@@ -100,7 +102,7 @@ public class GamePanel extends JPanel implements Runnable {
 //        }
 //    }
     public void run() {     // Alternative way to control refresh rate
-        double drawInterval = 1_000_000_000 / FPS;
+        double drawInterval = (double) 1_000_000_000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
@@ -148,6 +150,16 @@ public class GamePanel extends JPanel implements Runnable {
                     }
                 }
             }
+            for (int i = 0; i < projectileList.size(); i++) {
+                if (projectileList.get(i) != null) {
+                    if (projectileList.get(i).alive) {
+                        projectileList.get(i).update();
+                    }
+                    if (!projectileList.get(i).alive) {
+                        projectileList.remove(i);
+                    }
+                }
+            }
         }
         if (gameState == pauseState) {
             //nothing
@@ -183,6 +195,11 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             for (Entity entity : monster) {
+                if (entity != null) {
+                    entityList.add(entity);
+                }
+            }
+            for (Entity entity : projectileList) {
                 if (entity != null) {
                     entityList.add(entity);
                 }
