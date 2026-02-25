@@ -3,10 +3,7 @@ package entity;
 import main.GamePanel;
 import main.KeyHandler;
 import main.UtilityTool;
-import object.OBJ_Fireball;
-import object.OBJ_Key;
-import object.OBJ_Shield_Wood;
-import object.OBJ_Sword_Normal;
+import object.*;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -50,8 +47,6 @@ public class Player extends Entity {
     public void setDefaultValues() {
         worldX = gp.tileSize * 23;
         worldY = gp.tileSize * 21;
-//        worldX = gp.tileSize * 10;
-//        worldY = gp.tileSize * 13;
         speed = 4;
         direction = "down";
 
@@ -59,6 +54,9 @@ public class Player extends Entity {
         level = 1;
         maxLife = 6;
         life = maxLife;
+        maxMana = 4;
+        mana = maxMana;
+        ammo = 5;
         strength = 1;
         dexterity = 1;
         exp = 0;
@@ -194,9 +192,11 @@ public class Player extends Entity {
             }
         }
 
-        if (gp.keyH.shotKeyPressed && !projectile.alive && shotAvailableCounter == 50) {
+        if (gp.keyH.shotKeyPressed && !projectile.alive && shotAvailableCounter == 50 && projectile.haveResource(this)) {
             // SET DEFAULT COORDINATES, DIRECTION AND USER
             projectile.set(worldX, worldY, direction, true, this);
+            // SUBTRACT THE COST MANA, AMMO, ETC.
+            projectile.subtractResource(this);
             // ADD IT TO THE LIST
             gp.projectileList.add(projectile);
             shotAvailableCounter = 0;
@@ -351,7 +351,7 @@ public class Player extends Entity {
                     gp.ui.addMessage("Killed the " + gp.monster[i].name + "!");
                     int mult = gp.monster[i].level - level;
                     if (mult > 4) mult = 5;
-                    if (mult < 0) mult = 0;
+                    if (mult < -4) mult = -5;
                     int expPlus = gp.monster[i].exp + gp.monster[i].exp * mult / 5;
                     if (expPlus > 0) {
                         exp += expPlus;

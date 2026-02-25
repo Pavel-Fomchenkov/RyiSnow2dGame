@@ -2,6 +2,7 @@ package monster;
 
 import entity.Entity;
 import main.GamePanel;
+import object.OBJ_Rock;
 
 import java.util.Random;
 
@@ -21,6 +22,7 @@ public class MON_GreenSlime extends Entity {
         attack = 2;
         defense = 0;
         exp = 1;
+        projectile = new OBJ_Rock(gp);
 
         solidArea.x = 3;
         solidArea.y = 18;
@@ -31,6 +33,7 @@ public class MON_GreenSlime extends Entity {
 
         getImage();
     }
+
     public void getImage() {
         up1 = setup("/monster/greenslime_down_1", gp.tileSize, gp.tileSize);
         up2 = setup("/monster/greenslime_down_2", gp.tileSize, gp.tileSize);
@@ -41,6 +44,7 @@ public class MON_GreenSlime extends Entity {
         right1 = setup("/monster/greenslime_down_1", gp.tileSize, gp.tileSize);
         right2 = setup("/monster/greenslime_down_2", gp.tileSize, gp.tileSize);
     }
+
     public void setAction() {
         actionLockCounter++;
         if (actionLockCounter == 120) {
@@ -60,6 +64,13 @@ public class MON_GreenSlime extends Entity {
                 direction = "right";
             }
             actionLockCounter = 0;
+
+        }
+        int i = new Random().nextInt(100) + 1;
+        if (i > 99 && !projectile.alive && shotAvailableCounter == 50) {
+            projectile.set(worldX, worldY, direction, true, this);
+            gp.projectileList.add(projectile);
+            shotAvailableCounter = 0;
         }
     }
 

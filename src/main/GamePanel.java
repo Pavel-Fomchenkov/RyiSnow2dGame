@@ -221,7 +221,7 @@ public class GamePanel extends JPanel implements Runnable {
 //                g2.setFont(new Font("Arial", Font.PLAIN, 20));
                 g2.setColor(Color.white);
                 int x = tileSize / 3;
-                int y = tileSize * 2;
+                int y = tileSize * 3;
                 int lineHeight = tileSize / 2;
 
                 g2.drawString("Draw Time: " + passed, x, y);
