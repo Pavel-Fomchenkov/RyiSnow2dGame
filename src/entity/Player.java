@@ -257,8 +257,8 @@ public class Player extends Entity {
                     break;
             }
             // attackArea becomes solidArea
-            solidAreaWidth = attackArea.width;
-            solidAreaHeight = attackArea.height;
+            solidArea.width = attackArea.width;
+            solidArea.height = attackArea.height;
             // Check monster collision with the updated worldX, worldY and solidArea
             int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
             damageMonster(monsterIndex, attack);
@@ -357,11 +357,9 @@ public class Player extends Entity {
             if (!gp.monster[i].invincible) {
                 gp.playSE(5);
                 int damage = attack - gp.monster[i].defense;
+                if(damage > gp.monster[i].life) damage = gp.monster[i].life;
                 if (damage < 0) damage = 0;
                 gp.monster[i].life -= damage;
-                if (gp.monster[i].life < 0) {
-                    gp.monster[i].life = 0;
-                }
                 gp.ui.addMessage(damage + " damage!");
                 gp.monster[i].invincible = true;
                 gp.monster[i].damageReaction();

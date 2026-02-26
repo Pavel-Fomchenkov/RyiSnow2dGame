@@ -19,11 +19,15 @@ public class OBJ_Potion_Red extends Entity {
     @Override
     public void use(Entity entity) {
         gp.gameState = gp.dialogueState;
-        gp.ui.currentDialogue = "You drink the " + name + "!\n"
-                + "Your life has been recovered by " + value + ".";
+        if (entity.maxLife - entity.life < value) {
+            value = entity.maxLife - entity.life;
+        }
         entity.life += value;
-        if (gp.player.life > gp.player.maxLife) {
-            gp.player.life = gp.player.maxLife;
+        if (value != 0) {
+            gp.ui.currentDialogue = "You drink the " + name + "!\n"
+                    + "Your life has been recovered by " + value + ".";
+        } else {
+            gp.ui.currentDialogue = "You feel normal.";
         }
         gp.playSE(2);
     }

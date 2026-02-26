@@ -22,7 +22,12 @@ public class OBJ_Heart extends Entity {
     @Override
     public void use(Entity entity) {
         gp.playSE(2);
-        gp.ui.addMessage("Life +" + value);
+        if (entity.maxLife - entity.life < value) {
+            value = entity.maxLife - entity.life;
+        }
         entity.life += value;
+        if (value != 0) {
+            gp.ui.addMessage("Life +" + value);
+        }
     }
 }

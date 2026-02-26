@@ -17,10 +17,12 @@ public class InteractiveTile extends Entity {
 
     @Override
     public void update() {
-        invincibleCounter++;
-        if (invincibleCounter > 20) {
-            invincible = false;
-            invincibleCounter = 0;
+        if (invincible) {
+            invincibleCounter++;
+            if (invincibleCounter > 30) {
+                invincible = false;
+                invincibleCounter = 0;
+            }
         }
     }
 

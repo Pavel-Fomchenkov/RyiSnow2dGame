@@ -36,6 +36,11 @@ public class AssetSetter {
         gp.obj[i].worldY = 33 * gp.tileSize;
 
         i++;
+        gp.obj[i] = new OBJ_Potion_Red(gp);
+        gp.obj[i].worldX = 12 * gp.tileSize;
+        gp.obj[i].worldY = 33 * gp.tileSize;
+
+        i++;
         gp.obj[i] = new OBJ_Coin_Bronze(gp);
         gp.obj[i].worldX = gp.tileSize * 33;
         gp.obj[i].worldY = gp.tileSize * 9;
@@ -146,5 +151,12 @@ public class AssetSetter {
         gp.iTile[i] = new IT_DryTree(gp, 34 , 20);
         i++;
         gp.iTile[i] = new IT_DryTree(gp, 34 , 22);
+        i++;
+        gp.iTile[i] = new IT_DryTree(gp, 17 , 21);
+        i++;
+        gp.iTile[i] = new IT_DryTree(gp, 18 , 20);
+        i++;
+        gp.iTile[i] = new IT_DryTree(gp, 18 , 22);
+
     }
 }
