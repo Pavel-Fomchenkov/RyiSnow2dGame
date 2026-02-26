@@ -21,7 +21,12 @@ public class OBJ_ManaCrystal extends Entity {
     @Override
     public void use(Entity entity) {
         gp.playSE(2);
-        gp.ui.addMessage("Mana +" + value);
+        if (entity.maxMana - entity.mana < value) {
+            value = entity.maxMana - entity.mana;
+        }
         entity.mana += value;
+        if (value != 0) {
+            gp.ui.addMessage("Mana +" + value);
+        }
     }
 }

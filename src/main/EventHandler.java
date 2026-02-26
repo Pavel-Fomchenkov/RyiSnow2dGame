@@ -60,7 +60,7 @@ public class EventHandler {
         eventRect[col][row].x = col * gp.tileSize + eventRect[col][row].x;
         eventRect[col][row].y = row * gp.tileSize + eventRect[col][row].y;
 
-        if (gp.player.solidArea.intersects(eventRect[col][row]) && eventRect[col][row].eventDone == false) {
+        if (gp.player.solidArea.intersects(eventRect[col][row]) && !eventRect[col][row].eventDone) {
             if (gp.player.direction.contentEquals(reqDirection) || reqDirection.contentEquals("any")) {
                 hit = true;
                 previousEventX = gp.player.worldX;
