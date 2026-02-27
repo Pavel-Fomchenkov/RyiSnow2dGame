@@ -69,6 +69,8 @@ public class MON_GreenSlime extends Entity {
         int i = new Random().nextInt(100) + 1;
         if (i > 99 && !projectile.alive && shotAvailableCounter == 50) {
             projectile.set(worldX, worldY, direction, true, this);
+            projectile.speed = speed + 2;
+            projectile.maxLife = projectile.life = 100;
             gp.projectileList.add(projectile);
             shotAvailableCounter = 0;
         }

@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
     public Entity[] monster = new Entity[20];
     public InteractiveTile[] iTile = new InteractiveTile[50];
     public List<Entity> projectileList = new ArrayList<>();
+    public List<Entity> particleList = new ArrayList<>();
     List<Entity> entityList = new ArrayList<>();
     //GAME STATE
     public int gameState;
@@ -167,6 +168,18 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
+            for (int i = particleList.size() - 1; i >= 0; i--) {
+                Entity p = particleList.get(i);
+                if (p != null) {
+                    if (p.alive) {
+                        p.update();
+                    }
+                    if (!p.alive) {
+                        particleList.remove(i);
+                    }
+                }
+            }
+
             for (InteractiveTile tile : iTile) {
                 if (tile != null) {
                     tile.update();
@@ -218,6 +231,11 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
             for (Entity entity : projectileList) {
+                if (entity != null) {
+                    entityList.add(entity);
+                }
+            }
+            for (Entity entity : particleList) {
                 if (entity != null) {
                     entityList.add(entity);
                 }

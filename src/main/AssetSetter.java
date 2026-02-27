@@ -4,7 +4,6 @@ import entity.NPC_OldMan;
 import monster.MON_GreenSlime;
 import object.*;
 import tile_interactive.IT_DryTree;
-import tile_interactive.InteractiveTile;
 
 public class AssetSetter {
     GamePanel gp;
@@ -34,22 +33,14 @@ public class AssetSetter {
         gp.obj[i] = new OBJ_Potion_Red(gp);
         gp.obj[i].worldX = 11 * gp.tileSize;
         gp.obj[i].worldY = 33 * gp.tileSize;
-
-        i++;
-        gp.obj[i] = new OBJ_Potion_Red(gp);
-        gp.obj[i].worldX = 12 * gp.tileSize;
-        gp.obj[i].worldY = 33 * gp.tileSize;
-
         i++;
         gp.obj[i] = new OBJ_Coin_Bronze(gp);
         gp.obj[i].worldX = gp.tileSize * 33;
         gp.obj[i].worldY = gp.tileSize * 9;
-
         i++;
         gp.obj[i] = new OBJ_Heart(gp);
         gp.obj[i].worldX = gp.tileSize * 35;
         gp.obj[i].worldY = gp.tileSize * 9;
-
         i++;
         gp.obj[i] = new OBJ_ManaCrystal(gp);
         gp.obj[i].worldX = gp.tileSize * 34;
@@ -157,6 +148,5 @@ public class AssetSetter {
         gp.iTile[i] = new IT_DryTree(gp, 18 , 20);
         i++;
         gp.iTile[i] = new IT_DryTree(gp, 18 , 22);
-
     }
 }
