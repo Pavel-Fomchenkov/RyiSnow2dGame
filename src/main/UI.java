@@ -257,6 +257,8 @@ public class UI {
                 g2.drawString(">", x - gp.tileSize, y);
             }
         } else if (titleScreenState == 1) {
+            g2.setColor(Color.BLACK);
+            g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
             // CLASS SELECTION SCREEN
             g2.setColor(Color.WHITE);
             g2.setFont(g2.getFont().deriveFont(30F));
@@ -422,10 +424,10 @@ public class UI {
 
     public void drawInventory() {
         // FRAME
-        int frameX = gp.tileSize * 9;
-        int frameY = gp.tileSize;
         int frameWidth = gp.tileSize * 6;
         int frameHeight = gp.tileSize * 5;
+        int frameX = gp.tileSize * gp.maxScreenCol - gp.tileSize / 2 - frameWidth;
+        int frameY = gp.tileSize;
         drawSubWindow(frameX, frameY, frameWidth, frameHeight);
         // SLOT
         final int slotXStart = frameX + 20;
