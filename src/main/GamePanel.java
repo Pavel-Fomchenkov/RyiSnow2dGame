@@ -17,8 +17,7 @@ public class GamePanel extends JPanel implements Runnable {
     final int originalTileSize = 16; // 16x16 tile
     final int scale = 3;
     public final int tileSize = originalTileSize * scale; // 48x48 tile
-    // 21x13 for 16:10 monitor, 21x12 for 16:9 ratio, 16x12 for 4:3 ratio
-    public final int maxScreenCol = 20;
+    public final int maxScreenCol = 19;
     public final int maxScreenRow = 12;
     public final int screenWidth = tileSize * maxScreenCol; // 1008 pixels
     public final int screenHeight = tileSize * maxScreenRow; // 624 pixels
@@ -275,11 +274,11 @@ public class GamePanel extends JPanel implements Runnable {
             if (keyH.showDebugText) {
                 long drawEnd = System.nanoTime();
                 long passed = drawEnd - drawStart;
-//                g2.setFont(new Font("Arial", Font.PLAIN, 20));
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD,16F));
                 g2.setColor(Color.white);
                 int x = tileSize / 3;
                 int y = tileSize * 3;
-                int lineHeight = tileSize / 2;
+                int lineHeight = tileSize / 3;
 
                 g2.drawString("Draw Time: " + passed, x, y);
                 g2.drawString("FPS: " + currentFPS, x, y += lineHeight);
