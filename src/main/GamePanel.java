@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements Runnable {
     public AssetSetter aSetter = new AssetSetter(this);
     public UI ui = new UI(this);
     public EventHandler eHandler = new EventHandler(this);
+    Config config = new Config(this);
     Thread gameThread;
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
@@ -85,7 +86,9 @@ public class GamePanel extends JPanel implements Runnable {
         // will be resized to fullscreen once
         tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
         g2 = (Graphics2D) tempScreen.getGraphics();
-        setFullScreen(); // delete this line to run in window
+        if (fullScreenOn) {
+            setFullScreen(); // delete this line to run in window
+        }
     }
 
     public void setFullScreen() {
@@ -97,6 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
         screenWidth2 = Main.window.getWidth();
         screenHeight2 = Main.window.getHeight();
     }
+
     public void startGameThread() {
         gameThread = new Thread(this);
         gameThread.start();
@@ -276,7 +280,7 @@ public class GamePanel extends JPanel implements Runnable {
             if (keyH.showDebugText) {
                 long drawEnd = System.nanoTime();
                 long passed = drawEnd - drawStart;
-                g2.setFont(g2.getFont().deriveFont(Font.BOLD,16F));
+                g2.setFont(g2.getFont().deriveFont(Font.BOLD, 16F));
                 g2.setColor(Color.white);
                 int x = tileSize / 3;
                 int y = tileSize * 3;

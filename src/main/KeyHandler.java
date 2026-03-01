@@ -67,7 +67,10 @@ public class KeyHandler implements KeyListener {
                     case 1 -> {
                         // add later
                     }
-                    default -> System.exit(0);
+                    default -> {
+                        gp.config.saveConfig();
+                        System.exit(0);
+                    }
                 }
             }
         } else if (gp.ui.titleScreenState == 1) {
@@ -195,6 +198,8 @@ public class KeyHandler implements KeyListener {
     public void optionsState(int code) {
         if (code == KeyEvent.VK_ESCAPE) {
             gp.gameState = gp.playState;
+            gp.ui.commandNum = 0;
+            gp.ui.subState = 0;
         }
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = true;

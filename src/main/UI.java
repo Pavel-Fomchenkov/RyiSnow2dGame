@@ -16,7 +16,7 @@ public class UI {
     Font kosugiMaru, bulito;
     //    BufferedImage keyImage;
     BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
-    public boolean messageOn = false;
+//    public boolean messageOn = false;
     ArrayList<String> message = new ArrayList<>();
     ArrayList<Integer> messageCounter = new ArrayList<>();
     public boolean gameFinished = false;
@@ -213,7 +213,6 @@ public class UI {
                 }
             }
         }
-
     }
 
     public void drawTitleScreen() {
@@ -554,8 +553,10 @@ public class UI {
             }
         }
         // END GAME
-        textY += gp.tileSize;
-        g2.drawString("End game", textX, textY);
+        text = "Exit game";
+        textX = getXforCenteredText(text);
+        textY += gp.tileSize * 2;
+        g2.drawString(text, textX, textY);
         if (commandNum == 4) {
             g2.drawString(">", textX - (gp.tileSize / 2), textY);
             if (gp.keyH.enterPressed) {
@@ -566,7 +567,7 @@ public class UI {
         // BACK
         text = "Back";
         textX = getXforCenteredText(text);
-        textY += gp.tileSize * 2;
+        textY += gp.tileSize;
         g2.drawString(text, textX, textY);
         if (commandNum == 5) {
             g2.drawString(">", textX - (gp.tileSize / 2), textY);
