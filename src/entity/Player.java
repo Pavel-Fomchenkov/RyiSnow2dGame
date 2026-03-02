@@ -70,7 +70,20 @@ public class Player extends Entity {
         defense = getDefense();
     }
 
+    public void setDefaultPosition() {
+        worldX = gp.tileSize * 23;
+        worldY = gp.tileSize * 21;
+        direction = "down";
+    }
+
+    public void restoreLifeAndMana() {
+        life = maxLife;
+        mana = maxMana;
+        invincible = false;
+    }
+
     public void setItems() {
+        inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gp));
@@ -223,6 +236,12 @@ public class Player extends Entity {
         if (mana > maxMana) {
             mana = maxMana;
         }
+        if (life <= 0) {
+            gp.gameState = gp.gameOverState;
+            gp.ui.commandNum = -1;
+            gp.stopMusic();
+            gp.playSE(12);
+        }
     }
 
     public void attacking() {
@@ -358,7 +377,7 @@ public class Player extends Entity {
             if (!gp.monster[i].invincible) {
                 gp.playSE(5);
                 int damage = attack - gp.monster[i].defense;
-                if(damage > gp.monster[i].life) damage = gp.monster[i].life;
+                if (damage > gp.monster[i].life) damage = gp.monster[i].life;
                 if (damage < 0) damage = 0;
                 gp.monster[i].life -= damage;
                 gp.ui.addMessage(damage + " damage!");

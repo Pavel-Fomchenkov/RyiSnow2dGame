@@ -45,6 +45,10 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.optionsState) {
             optionsState(code);
         }
+        // GAME OVER STATE
+        else if (gp.gameState == gp.gameOverState) {
+            gameOverState(code);
+        }
     }
 
     public void titleState(int code) {
@@ -68,7 +72,6 @@ public class KeyHandler implements KeyListener {
                         // add later
                     }
                     default -> {
-                        gp.config.saveConfig();
                         System.exit(0);
                     }
                 }
@@ -90,16 +93,19 @@ public class KeyHandler implements KeyListener {
                 switch (gp.ui.commandNum) {
                     case 0 -> {
                         System.out.println("Do some fighter specific stuff!");
+                        gp.restart();
                         gp.gameState = gp.playState;
                         gp.playMusic(0);
                     }
                     case 1 -> {
                         System.out.println("Do some thief specific stuff!");
+                        gp.restart();
                         gp.gameState = gp.playState;
                         gp.playMusic(0);
                     }
                     case 2 -> {
                         System.out.println("Do some sorcerer specific stuff!");
+                        gp.restart();
                         gp.gameState = gp.playState;
                         gp.playMusic(0);
                     }
@@ -204,15 +210,11 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_ENTER) {
             enterPressed = true;
         }
-        int maxCommandNun = 0;
-        switch (gp.ui.subState) {
-            case 0:
-                maxCommandNun = 5;
-                break;
-            case 3:
-                maxCommandNun = 1;
-                break;
-        }
+        int maxCommandNun = switch (gp.ui.subState) {
+            case 0 -> 6;
+            case 3, 4 -> 1;
+            default -> 0;
+        };
         if (code == KeyEvent.VK_W) {
             gp.ui.commandNum--;
             gp.playSE(9);
@@ -251,6 +253,34 @@ public class KeyHandler implements KeyListener {
                     gp.se.volumeScale++;
                     gp.playSE(9);
                 }
+            }
+        }
+    }
+
+    public void gameOverState(int code) {
+        if (code == KeyEvent.VK_W) {
+            gp.ui.commandNum--;
+            if (gp.ui.commandNum < 0) {
+                gp.ui.commandNum = 1;
+            }
+            gp.playSE(9);
+        }
+        if (code == KeyEvent.VK_S) {
+            gp.ui.commandNum++;
+            if (gp.ui.commandNum > 1) {
+                gp.ui.commandNum = 0;
+            }
+            gp.playSE(9);
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            if (gp.ui.commandNum == 0) {
+                gp.gameState = gp.playState;
+                gp.retry();
+                gp.playMusic(0);
+            }
+            if (gp.ui.commandNum == 1) {
+                gp.gameState = gp.titleState;
+                gp.restart();
             }
         }
     }

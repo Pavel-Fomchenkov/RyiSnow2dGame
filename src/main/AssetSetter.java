@@ -5,6 +5,8 @@ import monster.MON_GreenSlime;
 import object.*;
 import tile_interactive.IT_DryTree;
 
+import java.util.Arrays;
+
 public class AssetSetter {
     GamePanel gp;
 
@@ -13,6 +15,7 @@ public class AssetSetter {
     }
 
     public void setObject() {
+        Arrays.fill(gp.obj, null);
         int i = 0;
         gp.obj[i] = new OBJ_Key(gp);
         gp.obj[i].worldX = 23 * gp.tileSize;
@@ -76,12 +79,14 @@ public class AssetSetter {
     }
 
     public void setNPC() {
+        Arrays.fill(gp.npc, null);
         gp.npc[0] = new NPC_OldMan(gp);
         gp.npc[0].worldX = gp.tileSize * 21;
         gp.npc[0].worldY = gp.tileSize * 21;
     }
 
     public void setMonster() {
+        Arrays.fill(gp.monster, null);
         int i = 0;
         gp.monster[i] = new MON_GreenSlime(gp);
         gp.monster[i].worldX = gp.tileSize * 23;
@@ -122,6 +127,7 @@ public class AssetSetter {
     }
 
     public void setInteractiveTile(){
+        Arrays.fill(gp.iTile, null);
         int i = 0;
         gp.iTile[i] = new IT_DryTree(gp, 14 , 35);
         i++;
