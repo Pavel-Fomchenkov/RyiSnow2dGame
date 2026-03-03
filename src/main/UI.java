@@ -24,10 +24,9 @@ public class UI {
 //    DecimalFormat dFormat = new DecimalFormat("#0.00");
     public String currentDialogue = "";
     public int commandNum = 0;
-    public int titleScreenState = 0; // 0: the first screen, 1: the second screen
+    int subState = 0;
     public int slotCol = 0;
     public int slotRow = 0;
-    int subState = 0;
 
     public UI(GamePanel gp) {
         this.gp = gp;
@@ -220,7 +219,7 @@ public class UI {
     }
 
     public void drawTitleScreen() {
-        if (titleScreenState == 0) {
+        if (subState == 0) {
             g2.setColor(new Color(0, 0, 0));
             g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
             // TITLE NAME
@@ -264,7 +263,7 @@ public class UI {
             if (commandNum == 2) {
                 g2.drawString(">", x - gp.tileSize, y);
             }
-        } else if (titleScreenState == 1) {
+        } else if (subState == 1) {
             g2.setColor(Color.BLACK);
             g2.fillRect(0, 0, gp.screenWidth, gp.screenHeight);
             // CLASS SELECTION SCREEN
@@ -782,7 +781,7 @@ public class UI {
                 subState = 0;
                 gp.music.stop();
                 gp.gameState = gp.titleState;
-                titleScreenState = 0;
+                subState = 0;
             }
         }
         // NO
@@ -798,7 +797,6 @@ public class UI {
             }
         }
     }
-
 
     public int getItemIndexOnSlot() {
         return slotCol + slotRow * 5;

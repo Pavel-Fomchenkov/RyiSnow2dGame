@@ -2,13 +2,9 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import main.UtilityTool;
 import object.*;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,10 +41,9 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
+        setDefaultPosition(gp.currentMap);
         speed = 4;
-        direction = "down";
+        invincible = false;
 
         // PLAYER STATUS
         level = 1;
@@ -70,9 +65,18 @@ public class Player extends Entity {
         defense = getDefense();
     }
 
-    public void setDefaultPosition() {
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
+    public void setDefaultPosition(int map) {
+        switch (map) {
+            case 0: {
+                worldX = gp.tileSize * 23;
+                worldY = gp.tileSize * 21;
+            }
+            break;
+            case 1: {
+                worldX = gp.tileSize * 12;
+                worldY = gp.tileSize * 13;
+            }
+        }
         direction = "down";
     }
 
@@ -299,22 +303,22 @@ public class Player extends Entity {
 
     public void pickUpObject(int i) {
         if (i != 999) {
-            if (gp.obj[i].type == type_pickupOnly) {
+            if (gp.obj[gp.currentMap][i].type == type_pickupOnly) {
                 // PICKUP ONLY ITEMS
-                gp.obj[i].use(this);
-                gp.obj[i] = null;
+                gp.obj[gp.currentMap][i].use(this);
+                gp.obj[gp.currentMap][i] = null;
             } else {
                 // INVENTORY ITEMS
                 String text;
                 if (inventory.size() != maxInventorySize) {
-                    inventory.add(gp.obj[i]);
+                    inventory.add(gp.obj[gp.currentMap][i]);
                     gp.playSE(2);
-                    text = "Got a " + gp.obj[i].name + "!";
+                    text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
                 } else {
                     text = "You cannot carry any more!";
                 }
                 gp.ui.addMessage(text);
-                gp.obj[i] = null;
+                gp.obj[gp.currentMap][i] = null;
 
 //            String objectName = gp.obj[i].name;
 //            switch (objectName) {
@@ -355,16 +359,16 @@ public class Player extends Entity {
             if (i != 999) {
                 attackCanceled = true;
                 gp.gameState = gp.dialogueState;
-                gp.npc[i].speak();
+                gp.npc[gp.currentMap][i].speak();
             }
         }
     }
 
     public void contactMonster(int i) {
         if (i != 999) {
-            if (!invincible && !gp.monster[i].dying) {
+            if (!invincible && !gp.monster[gp.currentMap][i].dying) {
                 gp.playSE(6);
-                int damage = gp.monster[i].attack - defense;
+                int damage = gp.monster[gp.currentMap][i].attack - defense;
                 if (damage <= 0) damage = 1;
                 life -= damage;
                 invincible = true;
@@ -374,23 +378,23 @@ public class Player extends Entity {
 
     public void damageMonster(int i, int attack) {
         if (i != 999) {
-            if (!gp.monster[i].invincible) {
+            if (!gp.monster[gp.currentMap][i].invincible) {
                 gp.playSE(5);
-                int damage = attack - gp.monster[i].defense;
-                if (damage > gp.monster[i].life) damage = gp.monster[i].life;
+                int damage = attack - gp.monster[gp.currentMap][i].defense;
+                if (damage > gp.monster[gp.currentMap][i].life) damage = gp.monster[gp.currentMap][i].life;
                 if (damage < 0) damage = 0;
-                gp.monster[i].life -= damage;
+                gp.monster[gp.currentMap][i].life -= damage;
                 gp.ui.addMessage(damage + " damage!");
-                gp.monster[i].invincible = true;
-                gp.monster[i].damageReaction();
-                if (gp.monster[i].life == 0) {
-                    gp.monster[i].dying = true;
-                    gp.ui.addMessage("Killed the " + gp.monster[i].name + "!");
+                gp.monster[gp.currentMap][i].invincible = true;
+                gp.monster[gp.currentMap][i].damageReaction();
+                if (gp.monster[gp.currentMap][i].life == 0) {
+                    gp.monster[gp.currentMap][i].dying = true;
+                    gp.ui.addMessage("Killed the " + gp.monster[gp.currentMap][i].name + "!");
                     // COUNT EXPERIENCE ADDED
-                    int mult = gp.monster[i].level - level;
+                    int mult = gp.monster[gp.currentMap][i].level - level;
                     if (mult > 4) mult = 5;
                     if (mult < -4) mult = -5;
-                    int expPlus = gp.monster[i].exp + gp.monster[i].exp * mult / 5;
+                    int expPlus = gp.monster[gp.currentMap][i].exp + gp.monster[gp.currentMap][i].exp * mult / 5;
                     if (expPlus > 0) {
                         exp += expPlus;
                         gp.ui.addMessage(expPlus + " exp");
@@ -402,13 +406,14 @@ public class Player extends Entity {
     }
 
     public void damageInteractiveTile(int i) {
-        if (i != 999 && gp.iTile[i].destructible && gp.iTile[i].isCorrectItem(this) && !gp.iTile[i].invincible) {
-            gp.iTile[i].playSE();
-            gp.iTile[i].life--;
-            gp.iTile[i].invincible = true;
-            generateParticle(gp.iTile[i], gp.iTile[i]);
-            if (gp.iTile[i].life == 0) {
-                gp.iTile[i] = gp.iTile[i].getDestroyedForm();
+        if (i != 999 && gp.iTile[gp.currentMap][i].destructible && gp.iTile[gp.currentMap][i].isCorrectItem(this)
+                && !gp.iTile[gp.currentMap][i].invincible) {
+            gp.iTile[gp.currentMap][i].playSE();
+            gp.iTile[gp.currentMap][i].life--;
+            gp.iTile[gp.currentMap][i].invincible = true;
+            generateParticle(gp.iTile[gp.currentMap][i], gp.iTile[gp.currentMap][i]);
+            if (gp.iTile[gp.currentMap][i].life == 0) {
+                gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
             }
         }
     }

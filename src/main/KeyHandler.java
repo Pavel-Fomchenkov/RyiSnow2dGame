@@ -52,7 +52,7 @@ public class KeyHandler implements KeyListener {
     }
 
     public void titleState(int code) {
-        if (gp.ui.titleScreenState == 0) {
+        if (gp.ui.subState == 0) {
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if (gp.ui.commandNum < 0) {
@@ -67,7 +67,7 @@ public class KeyHandler implements KeyListener {
             }
             if (code == KeyEvent.VK_ENTER) {
                 switch (gp.ui.commandNum) {
-                    case 0 -> gp.ui.titleScreenState = 1;
+                    case 0 -> gp.ui.subState = 1;
                     case 1 -> {
                         // add later
                     }
@@ -76,7 +76,7 @@ public class KeyHandler implements KeyListener {
                     }
                 }
             }
-        } else if (gp.ui.titleScreenState == 1) {
+        } else if (gp.ui.subState == 1) {
             if (code == KeyEvent.VK_W) {
                 gp.ui.commandNum--;
                 if (gp.ui.commandNum < 0) {
@@ -95,22 +95,28 @@ public class KeyHandler implements KeyListener {
                         System.out.println("Do some fighter specific stuff!");
                         gp.restart();
                         gp.gameState = gp.playState;
+                        gp.currentMap = 0;
+                        gp.ui.subState = 0;
                         gp.playMusic(0);
                     }
                     case 1 -> {
                         System.out.println("Do some thief specific stuff!");
                         gp.restart();
                         gp.gameState = gp.playState;
+                        gp.currentMap = 0;
+                        gp.ui.subState = 0;
                         gp.playMusic(0);
                     }
                     case 2 -> {
                         System.out.println("Do some sorcerer specific stuff!");
                         gp.restart();
                         gp.gameState = gp.playState;
+                        gp.currentMap = 0;
+                        gp.ui.subState = 0;
                         gp.playMusic(0);
                     }
                     default -> {
-                        gp.ui.titleScreenState = 0;
+                        gp.ui.subState = 0;
                         gp.ui.commandNum = 0;
                     }
                 }
@@ -152,7 +158,15 @@ public class KeyHandler implements KeyListener {
             showDebugText = !showDebugText;
         }
         if (code == KeyEvent.VK_R) {
-            gp.tileM.loadMap("/maps/worldV2.txt");
+            switch (gp.currentMap) {
+                case 0:
+                    gp.tileM.loadMap("/maps/worldV2.txt", 0); // MAP NAME SHOULD BE THE SAME AS IN THE TILE MANAGER
+                    break;
+                case 1:
+                    gp.tileM.loadMap("/maps/interior01.txt", 1);
+                    break;
+            }
+
         }
     }
 
@@ -280,6 +294,7 @@ public class KeyHandler implements KeyListener {
             }
             if (gp.ui.commandNum == 1) {
                 gp.gameState = gp.titleState;
+                gp.ui.subState = 0;
                 gp.restart();
             }
         }
