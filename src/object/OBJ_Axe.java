@@ -13,5 +13,6 @@ public class OBJ_Axe extends Entity {
         description = "[" + name + "]\nA bit rusty but still \ncan cut some trees.";
         attackArea.width = 30;
         attackArea.height = 30;
+        price = 30;
     }
 }

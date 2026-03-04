@@ -64,7 +64,6 @@ public class MON_GreenSlime extends Entity {
                 direction = "right";
             }
             actionLockCounter = 0;
-
         }
         int i = new Random().nextInt(100) + 1;
         if (i > 99 && !projectile.alive && shotAvailableCounter == 50) {

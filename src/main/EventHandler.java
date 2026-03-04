@@ -1,5 +1,9 @@
 package main;
 
+import entity.Entity;
+
+import java.util.Arrays;
+
 public class EventHandler {
     GamePanel gp;
     EventRect[][][] eventRect;
@@ -39,7 +43,6 @@ public class EventHandler {
     }
 
     public void checkEvent() {
-
         // Check if the player character is more than one tile away from last event
         int xDistance = Math.abs(gp.player.worldX - previousEventX);
         int yDistance = Math.abs(gp.player.worldY - previousEventY);
@@ -48,22 +51,24 @@ public class EventHandler {
             canTouchEvent = true;
         }
         if (canTouchEvent) {
-            if (hit(0, 33, 9, "any")) {
-                damagePit(gp.dialogueState);
-            }
-            if (hit(0, 23, 19, "any")) {
-                damagePit(gp.dialogueState);
-            }
-            if (hit(0, 23, 12, "up")) {
-                healingPool(gp.dialogueState);
-            }
-            if (hit(0, 27, 16, "right")) {
-                teleport(0, 37, 10, gp.dialogueState, "Teleport!", 2);
-            }
-            if (hit(0, 30, 28, "up")) {
-                teleport(1, 12, 13, gp.playState, null, 13);
-            } else if (hit(1, 12, 13, "down")) {
-                teleport(0, 30, 28, gp.playState, null, 13);
+            if (gp.currentMap == 0) {
+                if (hit(0, 33, 9, "any")) {
+                    damagePit(gp.dialogueState);
+                } else if (hit(0, 23, 19, "any")) {
+                    damagePit(gp.dialogueState);
+                } else if (hit(0, 23, 12, "up")) {
+                    healingPool(gp.dialogueState);
+                } else if (hit(0, 27, 16, "right")) {
+                    teleport(0, 37, 10, gp.dialogueState, "Teleport!", 2);
+                } else if (hit(0, 30, 28, "up")) {
+                    teleport(1, 12, 13, gp.playState, null, 13);
+                }
+            } else if (gp.currentMap == 1) {
+                if (hit(1, 12, 13, "down")) {
+                    teleport(0, 30, 28, gp.playState, null, 13);
+                } else if (hit(1, 12, 9, "up")) {
+                    speak(gp.npc[1][0]);
+                }
             }
         }
     }
@@ -115,6 +120,11 @@ public class EventHandler {
     public void teleport(int map, int col, int row, int gameState, String currentDialogue, int soundIndex) {
         gp.gameState = gp.transitionState;
         tempMap = map;
+        if (gp.currentMap != tempMap) {
+            for (int i = 0; i < gp.projectileList.size(); i++) {
+                gp.projectileList.get(i).life = 0;
+            }
+        }
         tempRow = row;
         tempCol = col;
         tempGameState = gameState;
@@ -122,5 +132,13 @@ public class EventHandler {
         canTouchEvent = false;
         gp.playSE(soundIndex);
         gp.ui.currentDialogue = currentDialogue;
+    }
+
+    public void speak(Entity entity) {
+        if (gp.keyH.enterPressed) {
+            gp.gameState = gp.dialogueState;
+            gp.player.attackCanceled = true;
+            entity.speak();
+        }
     }
 }

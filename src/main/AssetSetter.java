@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import entity.NPC_Merchant;
 import entity.NPC_OldMan;
 import monster.MON_GreenSlime;
 import object.*;
@@ -31,10 +32,6 @@ public class AssetSetter {
         gp.obj[mapNum][i].worldX = 36 * gp.tileSize;
         gp.obj[mapNum][i].worldY = 40 * gp.tileSize;
         i++;
-        gp.obj[mapNum][i] = new OBJ_Shield_Blue(gp);
-        gp.obj[mapNum][i].worldX = 38 * gp.tileSize;
-        gp.obj[mapNum][i].worldY = 9 * gp.tileSize;
-        i++;
         gp.obj[mapNum][i] = new OBJ_Potion_Red(gp);
         gp.obj[mapNum][i].worldX = 11 * gp.tileSize;
         gp.obj[mapNum][i].worldY = 33 * gp.tileSize;
@@ -42,13 +39,10 @@ public class AssetSetter {
         gp.obj[mapNum][i] = new OBJ_Coin_Bronze(gp);
         gp.obj[mapNum][i].worldX = gp.tileSize * 33;
         gp.obj[mapNum][i].worldY = gp.tileSize * 9;
+        gp.obj[mapNum][i].value = 3;
         i++;
         gp.obj[mapNum][i] = new OBJ_Heart(gp);
-        gp.obj[mapNum][i].worldX = gp.tileSize * 35;
-        gp.obj[mapNum][i].worldY = gp.tileSize * 9;
-        i++;
-        gp.obj[mapNum][i] = new OBJ_ManaCrystal(gp);
-        gp.obj[mapNum][i].worldX = gp.tileSize * 34;
+        gp.obj[mapNum][i].worldX = gp.tileSize * 38;
         gp.obj[mapNum][i].worldY = gp.tileSize * 9;
 
 //        gp.obj[1] = new OBJ_Key(gp);
@@ -83,9 +77,14 @@ public class AssetSetter {
     public void setNPC() {
         clear2dArray(gp.npc);
         int mapNum = 0;
-        gp.npc[mapNum][0] = new NPC_OldMan(gp);
-        gp.npc[mapNum][0].worldX = gp.tileSize * 21;
-        gp.npc[mapNum][0].worldY = gp.tileSize * 21;
+        int i = 0;
+        gp.npc[mapNum][i] = new NPC_OldMan(gp);
+        gp.npc[mapNum][i].worldX = gp.tileSize * 21;
+        gp.npc[mapNum][i].worldY = gp.tileSize * 21;
+        mapNum++;
+        gp.npc[mapNum][i] = new NPC_Merchant(gp);
+        gp.npc[mapNum][i].worldX = gp.tileSize * 12;
+        gp.npc[mapNum][i].worldY = gp.tileSize * 7;
     }
 
     public void setMonster() {
@@ -128,7 +127,7 @@ public class AssetSetter {
         gp.monster[mapNum][i].worldX = gp.tileSize * 23;
         gp.monster[mapNum][i].worldY = gp.tileSize * 40;
 
-        i++;
+        i = 0;
         mapNum = 1;
         gp.monster[mapNum][i] = new MON_GreenSlime(gp);
         gp.monster[mapNum][i].maxLife = 10;

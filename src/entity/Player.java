@@ -5,8 +5,6 @@ import main.KeyHandler;
 import object.*;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Player extends Entity {
     KeyHandler keyH;
@@ -15,8 +13,7 @@ public class Player extends Entity {
     public final int screenY;
     //    public int hasKey = 0;
     public boolean attackCanceled = false;
-    public List<Entity> inventory = new ArrayList<>();
-    public final int maxInventorySize = 20;
+
 
     public Player(GamePanel gp, KeyHandler keyH) {
         super(gp);
@@ -41,6 +38,7 @@ public class Player extends Entity {
     }
 
     public void setDefaultValues() {
+        gp.currentMap = 0;
         setDefaultPosition(gp.currentMap);
         speed = 4;
         invincible = false;
@@ -435,7 +433,7 @@ public class Player extends Entity {
     }
 
     public void selectItem() {
-        int itemIndex = gp.ui.getItemIndexOnSlot();
+        int itemIndex = gp.ui.getItemIndexOnSlot(gp.ui.playerSlotCol, gp.ui.playerSlotRow);
         if (itemIndex < inventory.size()) {
             Entity selectedItem = inventory.get(itemIndex);
             if (selectedItem.type == type_sword || selectedItem.type == type_axe) {
