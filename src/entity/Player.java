@@ -60,6 +60,7 @@ public class Player extends Entity {
         currentWeapon = new OBJ_Sword_Normal(gp);
 //        currentWeapon = new OBJ_Axe(gp);
         currentShield = new OBJ_Shield_Wood(gp);
+        getPlayerAttackImage();
         projectile = new OBJ_Fireball(gp);
         attack = getAttack();
         defense = getDefense();

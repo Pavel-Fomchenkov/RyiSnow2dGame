@@ -2,9 +2,14 @@ package main;
 
 public class EventHandler {
     GamePanel gp;
-    EventRect eventRect[][][];
+    EventRect[][][] eventRect;
     int previousEventX, previousEventY;
     boolean canTouchEvent = true;
+    int tempMap;
+    int tempRow;
+    int tempCol;
+    int tempGameState;
+
 
     public EventHandler(GamePanel gp) {
         this.gp = gp;
@@ -55,9 +60,9 @@ public class EventHandler {
             if (hit(0, 27, 16, "right")) {
                 teleport(0, 37, 10, gp.dialogueState, "Teleport!", 2);
             }
-            if (hit(0, 30, 28, "any")) {
+            if (hit(0, 30, 28, "up")) {
                 teleport(1, 12, 13, gp.playState, null, 13);
-            } else if (hit(1, 12, 13, "any")) {
+            } else if (hit(1, 12, 13, "down")) {
                 teleport(0, 30, 28, gp.playState, null, 13);
             }
         }
@@ -107,15 +112,15 @@ public class EventHandler {
         }
     }
 
-    public void teleport(int map, int row, int col, int gameState, String currentDialogue, int soundIndex) {
-        gp.gameState = gameState;
+    public void teleport(int map, int col, int row, int gameState, String currentDialogue, int soundIndex) {
+        gp.gameState = gp.transitionState;
+        tempMap = map;
+        tempRow = row;
+        tempCol = col;
+        tempGameState = gameState;
+
+        canTouchEvent = false;
         gp.playSE(soundIndex);
         gp.ui.currentDialogue = currentDialogue;
-        gp.currentMap = map;
-        gp.player.worldX = gp.tileSize * row;
-        gp.player.worldY = gp.tileSize * col;
-        previousEventX = gp.player.worldX;
-        previousEventY = gp.player.worldY;
-        canTouchEvent = false;
     }
 }
