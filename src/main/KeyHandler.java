@@ -157,6 +157,7 @@ public class KeyHandler implements KeyListener {
         // DEBUG
         if (code == KeyEvent.VK_T) {
             showDebugText = !showDebugText;
+            gp.tileM.drawPath = !gp.tileM.drawPath; // Draw path of entity onPath
         }
         if (code == KeyEvent.VK_R) {
             switch (gp.currentMap) {
@@ -167,7 +168,6 @@ public class KeyHandler implements KeyListener {
                     gp.tileM.loadMap("/maps/interior01.txt", 1);
                     break;
             }
-
         }
     }
 

@@ -1,5 +1,6 @@
 package main;
 
+import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import tile.TileManager;
@@ -40,7 +41,7 @@ public class GamePanel extends JPanel implements Runnable {
     int currentFPS = 0;
 
     // SYSTEM
-    TileManager tileM = new TileManager(this);
+    public TileManager tileM = new TileManager(this);
     public KeyHandler keyH = new KeyHandler(this);
     Sound music = new Sound();
     Sound se = new Sound();
@@ -49,6 +50,7 @@ public class GamePanel extends JPanel implements Runnable {
     public UI ui = new UI(this);
     public EventHandler eHandler = new EventHandler(this);
     Config config = new Config(this);
+    public PathFinder pFinder = new PathFinder(this);
     Thread gameThread;
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
@@ -59,7 +61,7 @@ public class GamePanel extends JPanel implements Runnable {
     public List<Entity> projectileList = new ArrayList<>();
     public List<Entity> particleList = new ArrayList<>();
     List<Entity> entityList = new ArrayList<>();
-    //GAME STATE
+    // GAME STATE
     public int gameState;
     public final int titleState = 0;
     public final int playState = 1;

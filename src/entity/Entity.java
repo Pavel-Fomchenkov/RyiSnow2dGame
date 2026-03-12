@@ -15,6 +15,7 @@ public class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
     public BufferedImage image, image2, image3;
+//    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int solidAreaDefaultX, solidAreaDefaultY;
@@ -32,6 +33,7 @@ public class Entity {
     public boolean dying = false;
     public boolean alive = true;
     boolean hpBarOn = false;
+    public boolean onPath = false;
 
     // COUNTER
     public int spriteCounter = 0;
@@ -164,8 +166,7 @@ public class Entity {
         gp.particleList.add(p4);
     }
 
-    public void update() {
-        setAction();
+    public void checkCollision() {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
@@ -177,6 +178,11 @@ public class Entity {
         if (this.type == type_monster && contactPlayer) {
             damagePlayer(attack);
         }
+    }
+
+    public void update() {
+        setAction();
+        checkCollision();
 
         // IF COLLISION IS FALSE, ENTITY CAN MOVE
         if (!collisionOn) {
@@ -380,5 +386,71 @@ public class Entity {
         }
         return image;
     }
-// TODO нужно сделать респаун мобов, подумать насчет респауна особых мобов (квестовых или боссов)
+
+    public void searchPath(int goalCol, int goalRow) {
+        int startCol = (worldX + solidArea.x) / gp.tileSize;
+        int startRow = (worldY + solidArea.y) / gp.tileSize;
+        gp.pFinder.setNodes(startCol, startRow, goalCol, goalRow, this);
+        if (gp.pFinder.search()) {
+            // Next worldX & worldY
+            int nextX = gp.pFinder.pathList.get(0).col * gp.tileSize;
+            int nextY = gp.pFinder.pathList.get(0).row * gp.tileSize;
+            // Entity's solidArea position
+            int enLeftX = worldX + solidArea.x;
+            int enRightX = worldX + solidArea.x + solidArea.width;
+            int enTopY = worldY + solidArea.y;
+            int enBottomY = worldY + solidArea.y + solidArea.height;
+
+            if (enTopY > nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) {
+                direction = "up";
+            } else if (enTopY < nextY && enLeftX >= nextX && enRightX < nextX + gp.tileSize) {
+                direction = "down";
+            } else if (enTopY >= nextY && enBottomY < nextY + gp.tileSize) {
+                // left or right
+                if (enLeftX > nextX) {
+                    direction = "left";
+                }
+                if (enLeftX < nextX) {
+                    direction = "right";
+                }
+            } else if (enTopY > nextY && enLeftX > nextX) {
+                // up or left
+                direction = "up";
+                checkCollision();
+                if (collisionOn) {
+                    direction = "left";
+                }
+            } else if (enTopY > nextY && enLeftX < nextX) {
+                // up or right
+                direction = "up";
+                checkCollision();
+                if (collisionOn) {
+                    direction = "right";
+                }
+            } else if (enTopY < nextY && enLeftX > nextX) {
+                // down or left
+                direction = "down";
+                checkCollision();
+                if (collisionOn) {
+                    direction = "left";
+                }
+            } else if (enTopY < nextY && enLeftX < nextX) {
+                // down or right
+                direction = "down";
+                checkCollision();
+                if (collisionOn) {
+                    direction = "right";
+                }
+            }
+            // If reaches the goal stop the search
+            int nextCol = gp.pFinder.pathList.get(0).col;
+            int nextRow = gp.pFinder.pathList.get(0).row;
+            if (nextCol == goalCol && nextRow == goalRow) {
+                onPath = false;
+                gp.pFinder.pathList.clear();
+            }
+        } else {
+            onPath = false;
+        }
+    }
 }
