@@ -217,8 +217,13 @@ public class Player extends Entity {
             projectile.set(worldX, worldY, direction, true, this);
             // SUBTRACT THE COST MANA, AMMO, ETC.
             projectile.subtractResource(this);
-            // ADD IT TO THE LIST
-            gp.projectileList.add(projectile);
+            // CHECK VACANCY
+            for (int i = 0; i < gp.projectile[gp.currentMap].length; i++) {
+                if (gp.projectile[gp.currentMap][i] == null) {
+                    gp.projectile[gp.currentMap][i] = projectile;
+                    break;
+                }
+            }
             shotAvailableCounter = 0;
             gp.playSE(10);
         }
@@ -288,6 +293,9 @@ public class Player extends Entity {
             // Check interactive tile collision
             int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
             damageInteractiveTile(iTileIndex);
+            // Check projectile collision to parry projectile
+            int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
+            damageProjectile(projectileIndex);
             // After checking collision, restore the original data
             worldX = currentWorldX;
             worldY = currentWorldY;
@@ -414,6 +422,14 @@ public class Player extends Entity {
             if (gp.iTile[gp.currentMap][i].life == 0) {
                 gp.iTile[gp.currentMap][i] = gp.iTile[gp.currentMap][i].getDestroyedForm();
             }
+        }
+    }
+
+    public void damageProjectile(int i) {
+        if (i != 999) {
+            Entity projectile = gp.projectile[gp.currentMap][i];
+            projectile.alive = false;
+            generateParticle(projectile, projectile);
         }
     }
 

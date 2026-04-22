@@ -2,8 +2,6 @@ package main;
 
 import entity.Entity;
 
-import java.util.Arrays;
-
 public class EventHandler {
     GamePanel gp;
     EventRect[][][] eventRect;
@@ -121,8 +119,10 @@ public class EventHandler {
         gp.gameState = gp.transitionState;
         tempMap = map;
         if (gp.currentMap != tempMap) {
-            for (int i = 0; i < gp.projectileList.size(); i++) {
-                gp.projectileList.get(i).life = 0;
+            for (int i = 0; i < gp.projectile[gp.currentMap].length; i++) {
+                if (gp.projectile[gp.currentMap][i] != null) {
+                    gp.projectile[gp.currentMap][i].life = 0;
+                }
             }
         }
         tempRow = row;

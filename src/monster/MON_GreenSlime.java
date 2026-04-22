@@ -73,7 +73,13 @@ public class MON_GreenSlime extends Entity {
                 projectile.set(worldX, worldY, direction, true, this);
                 projectile.speed = speed + 2;
                 projectile.maxLife = projectile.life = 100;
-                gp.projectileList.add(projectile);
+                // CHECK VACANCY
+                for (int j = 0; j < gp.projectile[gp.currentMap].length; j++) {
+                    if (gp.projectile[gp.currentMap][j] == null) {
+                        gp.projectile[gp.currentMap][j] = projectile;
+                        break;
+                    }
+                }
                 shotAvailableCounter = 0;
             }
         } else {
@@ -104,7 +110,7 @@ public class MON_GreenSlime extends Entity {
         actionLockCounter = 0;
 //        direction = gp.player.direction;
         // Monster aggro when gets damage
-         onPath = true;
+        onPath = true;
     }
 
     @Override
