@@ -15,7 +15,7 @@ public class Entity {
     public BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
     public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
     public BufferedImage image, image2, image3;
-//    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
+    //    public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public Rectangle attackArea = new Rectangle(0, 0, 0, 0);
     public int solidAreaDefaultX, solidAreaDefaultY;
@@ -34,6 +34,7 @@ public class Entity {
     public boolean alive = true;
     boolean hpBarOn = false;
     public boolean onPath = false;
+    public boolean knockBack = false;
 
     // COUNTER
     public int spriteCounter = 0;
@@ -42,9 +43,11 @@ public class Entity {
     public int shotAvailableCounter = 0;
     int dyingCounter = 0;
     int hpBarCounter = 0;
+    int knockBackCounter = 0;
 
     // CHARACTER ATTRIBUTES
     public String name;
+    public int defaultSpeed;
     public int speed;
     public int maxLife;
     public int life;
@@ -72,6 +75,7 @@ public class Entity {
     public String description = "";
     public int useCost;
     public int price;
+    public int knockBackPower = 0;
 
     // TYPE
     public int type;
@@ -181,26 +185,57 @@ public class Entity {
     }
 
     public void update() {
-        setAction();
-        checkCollision();
+        if (knockBack) {
+            checkCollision();
+            if (collisionOn) {
+                knockBackCounter = 0;
+                knockBack = false;
+                speed = defaultSpeed;
+            } else {
+                switch (gp.player.direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
+            }
+            knockBackCounter++;
+            if (knockBackCounter == 10) {
+                knockBackCounter = 0;
+                knockBack = false;
+                speed = defaultSpeed;
+            }
+        } else {
+            setAction();
+            checkCollision();
 
-        // IF COLLISION IS FALSE, ENTITY CAN MOVE
-        if (!collisionOn) {
-            switch (direction) {
-                case "up":
-                    worldY -= speed;
-                    break;
-                case "down":
-                    worldY += speed;
-                    break;
-                case "left":
-                    worldX -= speed;
-                    break;
-                case "right":
-                    worldX += speed;
-                    break;
+            // IF COLLISION IS FALSE, ENTITY CAN MOVE
+            if (!collisionOn) {
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down":
+                        worldY += speed;
+                        break;
+                    case "left":
+                        worldX -= speed;
+                        break;
+                    case "right":
+                        worldX += speed;
+                        break;
+                }
             }
         }
+
         spriteCounter++;
         if (spriteCounter > 24) {
             if (spriteNum == 1) {
@@ -221,6 +256,7 @@ public class Entity {
         if (shotAvailableCounter < 50) {
             shotAvailableCounter++;
         }
+
     }
 
     public void damagePlayer(int attack) {
