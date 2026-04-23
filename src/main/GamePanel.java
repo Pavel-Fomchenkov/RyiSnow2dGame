@@ -103,6 +103,13 @@ public class GamePanel extends JPanel implements Runnable {
     public void restart() {
         currentMap = 0;
         ui.message.clear();
+        // Clear projectiles
+        for (int i = 0; i < projectile[currentMap].length; i++) {
+            if (projectile[currentMap][i] != null) {
+                projectile[currentMap][i].life = 0;
+            }
+        }
+        particleList.clear();
         player.setDefaultValues();
         player.setItems();
         aSetter.setObject();
