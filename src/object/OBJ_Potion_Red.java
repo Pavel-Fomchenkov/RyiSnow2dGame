@@ -18,7 +18,7 @@ public class OBJ_Potion_Red extends Entity {
     }
 
     @Override
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gp.gameState = gp.dialogueState;
         if (entity.maxLife - entity.life < value) {
             value = entity.maxLife - entity.life;
@@ -31,5 +31,6 @@ public class OBJ_Potion_Red extends Entity {
             gp.ui.currentDialogue = "You feel normal.";
         }
         gp.playSE(2);
+        return true;
     }
 }

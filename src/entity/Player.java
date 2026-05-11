@@ -91,6 +91,26 @@ public class Player extends Entity {
         inventory.add(currentWeapon);
         inventory.add(currentShield);
         inventory.add(new OBJ_Key(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+        inventory.add(new OBJ_Potion_Red(gp));
+
+
+
     }
 
     public int getAttack() {
@@ -315,6 +335,12 @@ public class Player extends Entity {
                 // PICKUP ONLY ITEMS
                 gp.obj[gp.currentMap][i].use(this);
                 gp.obj[gp.currentMap][i] = null;
+            } else if (gp.obj[gp.currentMap][i].type == type_obstacle) {
+                // OBSTACLE
+                if (keyH.enterPressed) {
+                    attackCanceled = true;
+                    gp.obj[gp.currentMap][i].interact();
+                }
             } else {
                 // INVENTORY ITEMS
                 String text;
@@ -322,42 +348,11 @@ public class Player extends Entity {
                     inventory.add(gp.obj[gp.currentMap][i]);
                     gp.playSE(2);
                     text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
+                    gp.obj[gp.currentMap][i] = null;
                 } else {
                     text = "You cannot carry any more!";
                 }
                 gp.ui.addMessage(text);
-                gp.obj[gp.currentMap][i] = null;
-
-//            String objectName = gp.obj[i].name;
-//            switch (objectName) {
-//                case "Key":
-//                    gp.playSE(1);
-//                    hasKey++;
-//                    gp.obj[i] = null;
-//                    gp.ui.showMessage("You got a key!");
-//                    break;
-//                case "Door":
-//                    if (hasKey > 0) {
-//                        gp.playSE(3);
-//                        gp.obj[i] = null;
-//                        hasKey--;
-//                        gp.ui.showMessage("You opened the door!");
-//                    } else {
-//                        gp.ui.showMessage("You need a key!");
-//                    }
-//                    break;
-//                case "Boots":
-//                    gp.playSE(2);
-//                    speed += 1;
-//                    gp.obj[i] = null;
-//                    gp.ui.showMessage("Speed up!");
-//                    break;
-//                case "Chest":
-//                    gp.ui.gameFinished = true;
-//                    gp.stopMusic();
-//                    gp.playSE(4);
-//                    break;
-//            }
             }
         }
     }
@@ -472,8 +467,9 @@ public class Player extends Entity {
                 defense = getDefense();
             }
             if (selectedItem.type == type_consumable) {
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if (selectedItem.use(this)) {
+                    inventory.remove(itemIndex);
+                }
             }
         }
     }
