@@ -92,6 +92,14 @@ public class PathFinder {
                 row++;
             }
         }
+        // CHECK OBJECTS
+        for (int i = 0; i < gp.obj[gp.currentMap].length; i++) {
+            if (gp.obj[gp.currentMap][i] != null && gp.obj[gp.currentMap][i].collision) {
+                int itCol = gp.obj[gp.currentMap][i].worldX / gp.tileSize;
+                int itRow = gp.obj[gp.currentMap][i].worldY / gp.tileSize;
+                node[itCol][itRow].solid = true;
+            }
+        }
     }
 
     public void getCost(Node node) {
