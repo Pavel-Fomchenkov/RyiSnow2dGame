@@ -1,11 +1,11 @@
 package main;
 
 import entity.Entity;
+import object.OBJ_Chest;
 import object.OBJ_Coin_Bronze;
 import object.OBJ_Heart;
 import object.OBJ_ManaCrystal;
 
-import javax.imageio.stream.IIOByteBuffer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -159,6 +159,10 @@ public class UI {
         // TRADE STATE
         if (gp.gameState == gp.tradeState) {
             drawTradeScreen();
+        }
+        // EXCHANGE STATE
+        if (gp.gameState == gp.exchangeState) {
+            drawExchangeScreen();
         }
     }
 
@@ -994,6 +998,43 @@ public class UI {
                 }
             }
         }
+    }
+
+    public void drawExchangeScreen() {
+        // DRAW PLAYER INVENTORY
+        drawInventory(gp.player, false);
+        // DRAW PLAYER COIN WINDOW
+        int width = gp.tileSize * 6;
+        int height = gp.tileSize * 2;
+        int x = gp.screenWidth - gp.tileSize / 2 - width;
+        int y = gp.tileSize * 9;
+        drawSubWindow(x, y, width, height);
+        g2.setFont(g2.getFont().deriveFont(24F));
+        g2.drawString("Your coins: " + gp.player.coin, x + gp.tileSize / 2, y + 60);
+        // DRAW CHEST INVENTORY
+        drawInventory(npc, true);
+        // DRAW HINT WINDOW
+        x = gp.tileSize / 2;
+        drawSubWindow(x, y, width, height);
+        g2.drawString("[ESC] Back", x + gp.tileSize / 2, y + 60);
+        // TRANSFER AN ITEM
+        int itemIndex = getItemIndexOnSlot(npcSlotCol, npcSlotRow);
+        if (itemIndex < npc.inventory.size() && gp.keyH.enterPressed) {
+            if (gp.player.inventory.size() == gp.player.maxInventorySize) {
+                subState = 0;
+                npc.updateSprites();
+                gp.gameState = gp.dialogueState;
+                currentDialogue = "You cannot carry any more!";
+            } else {
+                if (!npc.inventory.get(itemIndex).name.equals("Bronze Coin")) {
+                    gp.player.inventory.add(npc.inventory.get(itemIndex));
+                } else {
+                    gp.player.coin += npc.inventory.get(itemIndex).value;
+                }
+                npc.inventory.remove(itemIndex);
+            }
+        }
+        gp.keyH.enterPressed = false;
     }
 
     public int getItemIndexOnSlot(int slotCol, int slotRow) {

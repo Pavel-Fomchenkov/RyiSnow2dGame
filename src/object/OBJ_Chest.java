@@ -3,21 +3,25 @@ package object;
 import entity.Entity;
 import main.GamePanel;
 
+import java.util.ArrayList;
+
 public class OBJ_Chest extends Entity {
     GamePanel gp;
-    Entity loot;
-    boolean opened = false;
+    public boolean opened;
+    public boolean empty = false;
 
-    public OBJ_Chest(GamePanel gp, Entity loot) {
+    public OBJ_Chest(GamePanel gp, ArrayList<Entity> inventory, boolean opened) {
         super(gp);
         this.gp = gp;
-        this.loot = loot;
+        this.inventory = inventory;
+        this.opened = opened;
 
         type = type_obstacle;
         name = "Chest";
         image = setup("/objects/chest", gp.tileSize, gp.tileSize);
-        image2 = setup("/objects/chest_opened", gp.tileSize, gp.tileSize);
-        down1 = image;
+        image2 = setup("/objects/chest_closed", gp.tileSize, gp.tileSize);
+        image3 = setup("/objects/chest_opened", gp.tileSize, gp.tileSize);
+        updateSprites();
         collision = true;
 
         solidArea.x = 4;
@@ -27,25 +31,36 @@ public class OBJ_Chest extends Entity {
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
     }
-    public void interact(){
-        gp.gameState = gp.dialogueState;
-        if(!opened){
+
+    @Override
+    public void interact() {
+        if (!opened) {
+            gp.gameState = gp.dialogueState;
             gp.playSE(3);
-
-            StringBuilder sb = new StringBuilder();
-            sb.append("You open a chest and find a " + loot.name + "!");
-
-            if (gp.player.inventory.size() == gp.player.maxInventorySize) {
-                sb.append("\n...But you cannot carry any more!");
-            } else {
-                sb.append("\nYou obtain the " + loot.name + "!");
-                gp.player.inventory.add(loot);
-                down1 = image2;
-                opened = true;
-            }
-            gp.ui.currentDialogue = sb.toString();
+            gp.ui.currentDialogue = "You need a key to open this.";
         } else {
-            gp.ui.currentDialogue = "It's empty.";
+            if (empty) {
+                gp.gameState = gp.dialogueState;
+                gp.ui.currentDialogue = "It's empty.";
+            } else {
+                gp.gameState = gp.exchangeState;
+                gp.playSE(3);
+                gp.ui.npc = this;
+                down1 = image3;
+            }
+        }
+    }
+
+    @Override
+    public void updateSprites() {
+        if (this.inventory.isEmpty()) {
+            down1 = image3;
+            return;
+        }
+        if (opened) {
+            down1 = image;
+        } else {
+            down1 = image2;
         }
     }
 }

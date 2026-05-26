@@ -13,7 +13,7 @@ public class OBJ_Key extends Entity {
         type = type_consumable;
         name = "Key";
         down1 = setup("/objects/key", gp.tileSize, gp.tileSize);
-        description = "[" + name + "]\nIt opens a door.";
+        description = "[" + name + "]\nIt opens a lock.";
         price = 15;
     }
 
@@ -26,9 +26,17 @@ public class OBJ_Key extends Entity {
             gp.playSE(3);
             gp.obj[gp.currentMap][objIndex] = null;
             return true;
-        } else {
-            gp.ui.currentDialogue = "What are you doing?";
-            return false;
         }
+        objIndex = getDetected(user, gp.obj, "Chest");
+        if (objIndex != 999) {
+            gp.ui.currentDialogue = "You use the " + name + " and open the chest.";
+            gp.playSE(3);
+            OBJ_Chest chest = (OBJ_Chest) gp.obj[gp.currentMap][objIndex];
+            chest.opened = true;
+            gp.obj[gp.currentMap][objIndex].updateSprites();
+            return true;
+        }
+        gp.ui.currentDialogue = "What are you doing?";
+        return false;
     }
 }

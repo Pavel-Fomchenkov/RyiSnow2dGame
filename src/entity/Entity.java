@@ -121,6 +121,9 @@ public class Entity {
     public void setAction() {
     }
 
+    public void updateSprites() {
+    }
+
     public void damageReaction() {
     }
 
@@ -543,10 +546,10 @@ public class Entity {
         int row = nextWorldY / gp.tileSize;
 
         for (int i = 0; i < target[gp.currentMap].length; i++) {
-            if(target[gp.currentMap][i] != null){
-                if(target[gp.currentMap][i].getCol() == col &&
+            if (target[gp.currentMap][i] != null) {
+                if (target[gp.currentMap][i].getCol() == col &&
                         target[gp.currentMap][i].getRow() == row &&
-                        target[gp.currentMap][i].name.equals(targetName)){
+                        target[gp.currentMap][i].name.equals(targetName)) {
                     index = i;
                     break;
                 }
