@@ -11,8 +11,8 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
-    //    public int hasKey = 0;
     public boolean attackCanceled = false;
+    private Entity lastFullInventoryItem = null;
 
 
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -57,7 +57,6 @@ public class Player extends Entity {
         nextLevelExp = 3;
         coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gp);
-//        currentWeapon = new OBJ_Axe(gp);
         currentShield = new OBJ_Shield_Wood(gp);
         getPlayerAttackImage();
         projectile = new OBJ_Fireball(gp);
@@ -90,7 +89,6 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
-        inventory.add(new OBJ_Key(gp));
     }
 
     public int getAttack() {
@@ -310,54 +308,35 @@ public class Player extends Entity {
     }
 
     public void pickUpObject(int i) {
-        if (i != 999) {
-            if (gp.obj[gp.currentMap][i].type == type_pickupOnly) {
-                // PICKUP ONLY ITEMS
-                gp.obj[gp.currentMap][i].use(this);
+        if (i == 999) {
+            lastFullInventoryItem = null;
+            return;
+        }
+        Entity obj = gp.obj[gp.currentMap][i];
+        if (obj.type == type_pickupOnly) {
+            // PICKUP ONLY ITEMS
+            obj.use(this);
+            gp.obj[gp.currentMap][i] = null;
+        } else if (obj.type == type_obstacle) {
+            // OBSTACLE
+            if (keyH.enterPressed) {
+                attackCanceled = true;
+                obj.interact();
+            }
+        } else {
+            // INVENTORY ITEMS
+            String text;
+            if (canObtainItem(gp.obj[gp.currentMap][i])) {
+                gp.playSE(2);
+                text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
                 gp.obj[gp.currentMap][i] = null;
-            } else {
-                // INVENTORY ITEMS
-                String text;
-                if (inventory.size() != maxInventorySize) {
-                    inventory.add(gp.obj[gp.currentMap][i]);
-                    gp.playSE(2);
-                    text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
-                } else {
-                    text = "You cannot carry any more!";
-                }
+                lastFullInventoryItem = null;
                 gp.ui.addMessage(text);
-                gp.obj[gp.currentMap][i] = null;
-
-//            String objectName = gp.obj[i].name;
-//            switch (objectName) {
-//                case "Key":
-//                    gp.playSE(1);
-//                    hasKey++;
-//                    gp.obj[i] = null;
-//                    gp.ui.showMessage("You got a key!");
-//                    break;
-//                case "Door":
-//                    if (hasKey > 0) {
-//                        gp.playSE(3);
-//                        gp.obj[i] = null;
-//                        hasKey--;
-//                        gp.ui.showMessage("You opened the door!");
-//                    } else {
-//                        gp.ui.showMessage("You need a key!");
-//                    }
-//                    break;
-//                case "Boots":
-//                    gp.playSE(2);
-//                    speed += 1;
-//                    gp.obj[i] = null;
-//                    gp.ui.showMessage("Speed up!");
-//                    break;
-//                case "Chest":
-//                    gp.ui.gameFinished = true;
-//                    gp.stopMusic();
-//                    gp.playSE(4);
-//                    break;
-//            }
+            } else {
+                if (lastFullInventoryItem != obj) {
+                    gp.ui.addMessage("You cannot carry any more!");
+                    lastFullInventoryItem = obj;
+                }
             }
         }
     }
@@ -472,49 +451,53 @@ public class Player extends Entity {
                 defense = getDefense();
             }
             if (selectedItem.type == type_consumable) {
-                selectedItem.use(this);
-                inventory.remove(itemIndex);
+                if (selectedItem.use(this)) {
+                    if (selectedItem.amount > 1) {
+                        selectedItem.amount--;
+                    } else {
+                        inventory.remove(itemIndex);
+                    }
+                }
             }
         }
     }
-/*    public void draw(Graphics2D g2) {
-//        g2.setColor(Color.white);
-//        g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-        BufferedImage image = null;
-        switch (direction) {
-            case "up":
-                if (spriteNum == 1) {
-                    image = up1;
-                }
-                if (spriteNum == 2) {
-                    image = up2;
-                }
+
+    public int searchItemInInventory(String itemName) {
+        int itemIndex = 999;
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
                 break;
-            case "down":
-                if (spriteNum == 1) {
-                    image = down1;
-                }
-                if (spriteNum == 2) {
-                    image = down2;
-                }
-                break;
-            case "left":
-                if (spriteNum == 1) {
-                    image = left1;
-                }
-                if (spriteNum == 2) {
-                    image = left2;
-                }
-                break;
-            case "right":
-                if (spriteNum == 1) {
-                    image = right1;
-                }
-                if (spriteNum == 2) {
-                    image = right2;
-                }
-                break;
+            }
         }
-        g2.drawImage(image, screenX, screenY, null);
-    }*/
+        return itemIndex;
+    }
+
+    public boolean canObtainItem(Entity item) {
+        boolean canObtain = false;
+        // CHECK IF STACKABLE
+        if (item.stackable) {
+            int index = searchItemInInventory(item.name);
+            if (index != 999) {
+                inventory.get(index).amount += item.amount;
+                canObtain = true;
+            } else {
+                // NEW ITEM SO NEED TO CHECK VACANCY
+                if (inventory.size() != maxInventorySize) {
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        } else {
+            if (item.name.equals("Bronze Coin")) {
+                gp.player.coin += item.value;
+                canObtain = true;
+            } else if (inventory.size() != maxInventorySize) {
+                // NOT STACKABLE SO CHECK VACANCY
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+        return canObtain;
+    }
 }

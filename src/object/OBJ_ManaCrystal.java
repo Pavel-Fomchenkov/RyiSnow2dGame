@@ -19,7 +19,7 @@ public class OBJ_ManaCrystal extends Entity {
     }
 
     @Override
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gp.playSE(2);
         if (entity.maxMana - entity.mana < value) {
             value = entity.maxMana - entity.mana;
@@ -28,5 +28,6 @@ public class OBJ_ManaCrystal extends Entity {
         if (value != 0) {
             gp.ui.addMessage("Mana +" + value);
         }
+        return true;
     }
 }

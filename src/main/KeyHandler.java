@@ -53,6 +53,10 @@ public class KeyHandler implements KeyListener {
         else if (gp.gameState == gp.tradeState) {
             tradeState(code);
         }
+        // EXCHANGE STATE
+        else if (gp.gameState == gp.exchangeState) {
+            exchangeState(code);
+        }
     }
 
     public void titleState(int code) {
@@ -309,6 +313,17 @@ public class KeyHandler implements KeyListener {
             if (code == KeyEvent.VK_ESCAPE) {
                 gp.ui.subState = 0;
             }
+        }
+    }
+
+    public void exchangeState(int code) {
+        npcInventory(code);
+        if (code == KeyEvent.VK_ESCAPE) {
+            gp.ui.npc.updateSprites();
+            gp.gameState = gp.playState;
+        }
+        if (code == KeyEvent.VK_ENTER) {
+            enterPressed = true;
         }
     }
 

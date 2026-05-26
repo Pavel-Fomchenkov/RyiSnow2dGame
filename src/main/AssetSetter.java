@@ -7,6 +7,7 @@ import monster.MON_GreenSlime;
 import object.*;
 import tile_interactive.IT_DryTree;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AssetSetter {
@@ -41,10 +42,18 @@ public class AssetSetter {
         gp.obj[mapNum][i].worldY = gp.tileSize * 9;
         gp.obj[mapNum][i].value = 3;
         i++;
-        gp.obj[mapNum][i] = new OBJ_Heart(gp);
+        gp.obj[mapNum][i] = new OBJ_Chest(gp, new ArrayList<>(Arrays.asList(
+                new OBJ_Shield_Blue(gp),
+                new OBJ_Coin_Bronze(gp, 5),
+                new OBJ_Potion_Red(gp))
+        ), false);
         gp.obj[mapNum][i].worldX = gp.tileSize * 38;
         gp.obj[mapNum][i].worldY = gp.tileSize * 9;
-
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Door(gp);
+        gp.obj[mapNum][i].worldX = gp.tileSize * 10;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 12;
+        i++;
 //        gp.obj[1] = new OBJ_Key(gp);
 //        gp.obj[1].worldX = 23 * gp.tileSize;
 //        gp.obj[1].worldY = 40 * gp.tileSize;
@@ -104,13 +113,13 @@ public class AssetSetter {
 
         i++;
         gp.monster[mapNum][i] = new MON_GreenSlime(gp);
-        gp.monster[mapNum][i].worldX = gp.tileSize * 11;
-        gp.monster[mapNum][i].worldY = gp.tileSize * 10;
+        gp.monster[mapNum][i].worldX = gp.tileSize * 10;
+        gp.monster[mapNum][i].worldY = gp.tileSize * 11;
 
         i++;
         gp.monster[mapNum][i] = new MON_GreenSlime(gp);
-        gp.monster[mapNum][i].worldX = gp.tileSize * 11;
-        gp.monster[mapNum][i].worldY = gp.tileSize * 11;
+        gp.monster[mapNum][i].worldX = gp.tileSize * 9;
+        gp.monster[mapNum][i].worldY = gp.tileSize * 8;
 
         i++;
         gp.monster[mapNum][i] = new MON_GreenSlime(gp);

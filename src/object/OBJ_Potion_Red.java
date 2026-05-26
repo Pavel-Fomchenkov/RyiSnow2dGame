@@ -15,10 +15,11 @@ public class OBJ_Potion_Red extends Entity {
         down1 = setup("/objects/potion_red", gp.tileSize, gp.tileSize);
         description = "[" + name + "]\nHeals your life by " + value + ".";
         price = 10;
+        stackable = true;
     }
 
     @Override
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gp.gameState = gp.dialogueState;
         if (entity.maxLife - entity.life < value) {
             value = entity.maxLife - entity.life;
@@ -31,5 +32,6 @@ public class OBJ_Potion_Red extends Entity {
             gp.ui.currentDialogue = "You feel normal.";
         }
         gp.playSE(2);
+        return true;
     }
 }

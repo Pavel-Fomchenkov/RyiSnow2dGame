@@ -20,7 +20,7 @@ public class OBJ_Heart extends Entity {
     }
 
     @Override
-    public void use(Entity entity) {
+    public boolean use(Entity entity) {
         gp.playSE(2);
         if (entity.maxLife - entity.life < value) {
             value = entity.maxLife - entity.life;
@@ -29,5 +29,6 @@ public class OBJ_Heart extends Entity {
         if (value != 0) {
             gp.ui.addMessage("Life +" + value);
         }
+        return true;
     }
 }
