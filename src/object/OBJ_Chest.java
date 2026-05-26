@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class OBJ_Chest extends Entity {
     GamePanel gp;
     public boolean opened;
-    public boolean empty = false;
 
     public OBJ_Chest(GamePanel gp, ArrayList<Entity> inventory, boolean opened) {
         super(gp);
@@ -39,7 +38,7 @@ public class OBJ_Chest extends Entity {
             gp.playSE(3);
             gp.ui.currentDialogue = "You need a key to open this.";
         } else {
-            if (empty) {
+            if (this.inventory.isEmpty()) {
                 gp.gameState = gp.dialogueState;
                 gp.ui.currentDialogue = "It's empty.";
             } else {
