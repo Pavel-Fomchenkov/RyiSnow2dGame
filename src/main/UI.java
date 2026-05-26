@@ -491,6 +491,21 @@ public class UI {
                 g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
             }
             g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
+            // DISPLAY AMOUNT
+            if (entity.inventory.get(i).amount > 1) {
+                g2.setFont(g2.getFont().deriveFont(32f));
+                int amountX;
+                int amountY;
+                String s = "" + entity.inventory.get(i).amount;
+                amountX = getXforAlignToRightText(s, slotX + 44);
+                amountY = slotY + gp.tileSize;
+                // SHADOW
+                g2.setColor(new Color(60, 60, 60));
+                g2.drawString(s, amountX, amountY);
+                // NUMBER
+                g2.setColor(Color.white);
+                g2.drawString(s, amountX - 3, amountY - 3);
+            }
             slotX += slotSize;
             if (i == 4 || i == 9 || i == 14) {
                 slotX = slotXStart;
@@ -946,13 +961,12 @@ public class UI {
                     gp.gameState = gp.dialogueState;
                     currentDialogue = "You need more coins to buy that!";
                     drawDialogueScreen();
-                } else if (gp.player.inventory.size() == gp.player.maxInventorySize) {
+                } else if (gp.player.canObtainItem(npc.inventory.get(itemIndex))) {
+                    gp.player.coin -= npc.inventory.get(itemIndex).price;
+                } else {
                     subState = 0;
                     gp.gameState = gp.dialogueState;
                     currentDialogue = "You cannot carry any more!";
-                } else {
-                    gp.player.coin -= npc.inventory.get(itemIndex).price;
-                    gp.player.inventory.add(npc.inventory.get(itemIndex));
                 }
             }
         }
@@ -993,7 +1007,11 @@ public class UI {
                     gp.gameState = gp.dialogueState;
                     currentDialogue = "You cannot sell an equipped item!";
                 } else {
-                    gp.player.inventory.remove(itemIndex);
+                    if (gp.player.inventory.get(itemIndex).amount > 1) {
+                        gp.player.inventory.get(itemIndex).amount--;
+                    } else {
+                        gp.player.inventory.remove(itemIndex);
+                    }
                     gp.player.coin += price;
                 }
             }
@@ -1020,17 +1038,12 @@ public class UI {
         // TRANSFER AN ITEM
         int itemIndex = getItemIndexOnSlot(npcSlotCol, npcSlotRow);
         if (itemIndex < npc.inventory.size() && gp.keyH.enterPressed) {
-            if (gp.player.inventory.size() == gp.player.maxInventorySize) {
+            if (!gp.player.canObtainItem(npc.inventory.get(itemIndex))) {
                 subState = 0;
                 npc.updateSprites();
                 gp.gameState = gp.dialogueState;
                 currentDialogue = "You cannot carry any more!";
             } else {
-                if (!npc.inventory.get(itemIndex).name.equals("Bronze Coin")) {
-                    gp.player.inventory.add(npc.inventory.get(itemIndex));
-                } else {
-                    gp.player.coin += npc.inventory.get(itemIndex).value;
-                }
                 npc.inventory.remove(itemIndex);
             }
         }

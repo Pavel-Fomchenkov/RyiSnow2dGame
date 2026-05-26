@@ -57,7 +57,6 @@ public class Player extends Entity {
         nextLevelExp = 3;
         coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gp);
-//        currentWeapon = new OBJ_Axe(gp);
         currentShield = new OBJ_Shield_Wood(gp);
         getPlayerAttackImage();
         projectile = new OBJ_Fireball(gp);
@@ -90,26 +89,6 @@ public class Player extends Entity {
         inventory.clear();
         inventory.add(currentWeapon);
         inventory.add(currentShield);
-        inventory.add(new OBJ_Key(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-        inventory.add(new OBJ_Potion_Red(gp));
-
-
     }
 
     public int getAttack() {
@@ -347,12 +326,12 @@ public class Player extends Entity {
         } else {
             // INVENTORY ITEMS
             String text;
-            if (inventory.size() < maxInventorySize) {
-                inventory.add(gp.obj[gp.currentMap][i]);
+            if (canObtainItem(gp.obj[gp.currentMap][i])) {
                 gp.playSE(2);
                 text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
                 gp.obj[gp.currentMap][i] = null;
                 lastFullInventoryItem = null;
+                gp.ui.addMessage(text);
             } else {
                 if (lastFullInventoryItem != obj) {
                     gp.ui.addMessage("You cannot carry any more!");
@@ -473,9 +452,52 @@ public class Player extends Entity {
             }
             if (selectedItem.type == type_consumable) {
                 if (selectedItem.use(this)) {
-                    inventory.remove(itemIndex);
+                    if (selectedItem.amount > 1) {
+                        selectedItem.amount--;
+                    } else {
+                        inventory.remove(itemIndex);
+                    }
                 }
             }
         }
+    }
+
+    public int searchItemInInventory(String itemName) {
+        int itemIndex = 999;
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i).name.equals(itemName)) {
+                itemIndex = i;
+                break;
+            }
+        }
+        return itemIndex;
+    }
+
+    public boolean canObtainItem(Entity item) {
+        boolean canObtain = false;
+        // CHECK IF STACKABLE
+        if (item.stackable) {
+            int index = searchItemInInventory(item.name);
+            if (index != 999) {
+                inventory.get(index).amount += item.amount;
+                canObtain = true;
+            } else {
+                // NEW ITEM SO NEED TO CHECK VACANCY
+                if (inventory.size() != maxInventorySize) {
+                    inventory.add(item);
+                    canObtain = true;
+                }
+            }
+        } else {
+            if (item.name.equals("Bronze Coin")) {
+                gp.player.coin += item.value;
+                canObtain = true;
+            } else if (inventory.size() != maxInventorySize) {
+                // NOT STACKABLE SO CHECK VACANCY
+                inventory.add(item);
+                canObtain = true;
+            }
+        }
+        return canObtain;
     }
 }

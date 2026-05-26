@@ -44,6 +44,7 @@ public class AssetSetter {
         i++;
         gp.obj[mapNum][i] = new OBJ_Chest(gp, new ArrayList<>(Arrays.asList(
                 new OBJ_Shield_Blue(gp),
+                new OBJ_Coin_Bronze(gp, 5),
                 new OBJ_Potion_Red(gp))
         ), false);
         gp.obj[mapNum][i].worldX = gp.tileSize * 38;
