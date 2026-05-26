@@ -11,8 +11,8 @@ public class Player extends Entity {
 
     public final int screenX;
     public final int screenY;
-    //    public int hasKey = 0;
     public boolean attackCanceled = false;
+    private Entity lastFullInventoryItem = null;
 
 
     public Player(GamePanel gp, KeyHandler keyH) {
@@ -55,7 +55,7 @@ public class Player extends Entity {
         dexterity = 1;
         exp = 0;
         nextLevelExp = 3;
-        coin = 100;
+        coin = 0;
         currentWeapon = new OBJ_Sword_Normal(gp);
 //        currentWeapon = new OBJ_Axe(gp);
         currentShield = new OBJ_Shield_Wood(gp);
@@ -108,7 +108,6 @@ public class Player extends Entity {
         inventory.add(new OBJ_Potion_Red(gp));
         inventory.add(new OBJ_Potion_Red(gp));
         inventory.add(new OBJ_Potion_Red(gp));
-
 
 
     }
@@ -330,29 +329,35 @@ public class Player extends Entity {
     }
 
     public void pickUpObject(int i) {
-        if (i != 999) {
-            if (gp.obj[gp.currentMap][i].type == type_pickupOnly) {
-                // PICKUP ONLY ITEMS
-                gp.obj[gp.currentMap][i].use(this);
+        if (i == 999) {
+            lastFullInventoryItem = null;
+            return;
+        }
+        Entity obj = gp.obj[gp.currentMap][i];
+        if (obj.type == type_pickupOnly) {
+            // PICKUP ONLY ITEMS
+            obj.use(this);
+            gp.obj[gp.currentMap][i] = null;
+        } else if (obj.type == type_obstacle) {
+            // OBSTACLE
+            if (keyH.enterPressed) {
+                attackCanceled = true;
+                obj.interact();
+            }
+        } else {
+            // INVENTORY ITEMS
+            String text;
+            if (inventory.size() < maxInventorySize) {
+                inventory.add(gp.obj[gp.currentMap][i]);
+                gp.playSE(2);
+                text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
                 gp.obj[gp.currentMap][i] = null;
-            } else if (gp.obj[gp.currentMap][i].type == type_obstacle) {
-                // OBSTACLE
-                if (keyH.enterPressed) {
-                    attackCanceled = true;
-                    gp.obj[gp.currentMap][i].interact();
-                }
+                lastFullInventoryItem = null;
             } else {
-                // INVENTORY ITEMS
-                String text;
-                if (inventory.size() != maxInventorySize) {
-                    inventory.add(gp.obj[gp.currentMap][i]);
-                    gp.playSE(2);
-                    text = "Got a " + gp.obj[gp.currentMap][i].name + "!";
-                    gp.obj[gp.currentMap][i] = null;
-                } else {
-                    text = "You cannot carry any more!";
+                if (lastFullInventoryItem != obj) {
+                    gp.ui.addMessage("You cannot carry any more!");
+                    lastFullInventoryItem = obj;
                 }
-                gp.ui.addMessage(text);
             }
         }
     }
