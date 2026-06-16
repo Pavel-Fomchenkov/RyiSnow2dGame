@@ -493,7 +493,7 @@ public class UI {
             g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
             // DISPLAY AMOUNT
             if (entity.inventory.get(i).amount > 1) {
-                g2.setFont(g2.getFont().deriveFont(32f));
+                g2.setFont(g2.getFont().deriveFont(24f));
                 int amountX;
                 int amountY;
                 String s = "" + entity.inventory.get(i).amount;
