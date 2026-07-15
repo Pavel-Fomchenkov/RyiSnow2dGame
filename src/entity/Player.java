@@ -5,6 +5,7 @@ import main.KeyHandler;
 import object.*;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
     KeyHandler keyH;
@@ -110,6 +111,17 @@ public class Player extends Entity {
         left2 = setup("/player/boy_left_2", gp.tileSize, gp.tileSize);
         right1 = setup("/player/boy_right_1", gp.tileSize, gp.tileSize);
         right2 = setup("/player/boy_right_2", gp.tileSize, gp.tileSize);
+    }
+
+    public void getSleepingImage(BufferedImage image) {
+        up1 = image;
+        up2 = image;
+        down1 = image;
+        down2 = image;
+        left1 = image;
+        left2 = image;
+        right1 = image;
+        right2 = image;
     }
 
     public void getPlayerAttackImage() {
