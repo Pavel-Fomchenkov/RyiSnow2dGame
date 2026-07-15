@@ -4,6 +4,7 @@ import ai.PathFinder;
 import entity.Entity;
 import entity.Player;
 import entity.Projectile;
+import environment.EnvironmentManager;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 
@@ -51,6 +52,7 @@ public class GamePanel extends JPanel implements Runnable {
     public EventHandler eHandler = new EventHandler(this);
     Config config = new Config(this);
     public PathFinder pFinder = new PathFinder(this);
+    EnvironmentManager eManager = new EnvironmentManager(this);
     Thread gameThread;
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
@@ -73,6 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int transitionState = 7;
     public final int tradeState = 8;
     public final int exchangeState = 9;
+    public final int sleepState = 10;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -116,6 +119,7 @@ public class GamePanel extends JPanel implements Runnable {
         aSetter.setNPC();
         aSetter.setMonster();
         aSetter.setInteractiveTile();
+        eManager.setup();
     }
 
     public void setFullScreen() {
@@ -240,6 +244,7 @@ public class GamePanel extends JPanel implements Runnable {
                     tile.update();
                 }
             }
+            eManager.update();
         }
         if (gameState == pauseState) {
             //nothing
@@ -301,6 +306,9 @@ public class GamePanel extends JPanel implements Runnable {
 
             // EMPTY ENTITY LIST
             entityList.clear();
+
+            // ENVIRONMENT
+            eManager.draw(g2);
 
             // DEBUG
             if (keyH.showDebugText) {

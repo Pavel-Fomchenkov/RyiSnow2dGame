@@ -54,33 +54,13 @@ public class AssetSetter {
         gp.obj[mapNum][i].worldX = gp.tileSize * 10;
         gp.obj[mapNum][i].worldY = gp.tileSize * 12;
         i++;
-//        gp.obj[1] = new OBJ_Key(gp);
-//        gp.obj[1].worldX = 23 * gp.tileSize;
-//        gp.obj[1].worldY = 40 * gp.tileSize;
-//
-//        gp.obj[2] = new OBJ_Key(gp);
-//        gp.obj[2].worldX = 38 * gp.tileSize;
-//        gp.obj[2].worldY = 8 * gp.tileSize;
-//
-//        gp.obj[3] = new OBJ_Door(gp);
-//        gp.obj[3].worldX = 10 * gp.tileSize;
-//        gp.obj[3].worldY = 12 * gp.tileSize;
-//
-//        gp.obj[4] = new OBJ_Door(gp);
-//        gp.obj[4].worldX = 8 * gp.tileSize;
-//        gp.obj[4].worldY = 28 * gp.tileSize;
-//
-//        gp.obj[5] = new OBJ_Door(gp);
-//        gp.obj[5].worldX = 12 * gp.tileSize;
-//        gp.obj[5].worldY = 23 * gp.tileSize;
-//
-//        gp.obj[6] = new OBJ_Chest(gp);
-//        gp.obj[6].worldX = 10 * gp.tileSize;
-//        gp.obj[6].worldY = 8 * gp.tileSize;
-//
-//        gp.obj[7] = new OBJ_Boots(gp);
-//        gp.obj[7].worldX = 37 * gp.tileSize;
-//        gp.obj[7].worldY = 42 * gp.tileSize;
+        gp.obj[mapNum][i] = new OBJ_Lantern(gp);
+        gp.obj[mapNum][i].worldX = gp.tileSize * 19;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 20;
+        i++;
+        gp.obj[mapNum][i] = new OBJ_Tent(gp);
+        gp.obj[mapNum][i].worldX = gp.tileSize * 18;
+        gp.obj[mapNum][i].worldY = gp.tileSize * 21;
     }
 
     public void setNPC() {

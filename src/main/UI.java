@@ -1,7 +1,6 @@
 package main;
 
 import entity.Entity;
-import object.OBJ_Chest;
 import object.OBJ_Coin_Bronze;
 import object.OBJ_Heart;
 import object.OBJ_ManaCrystal;
@@ -163,6 +162,10 @@ public class UI {
         // EXCHANGE STATE
         if (gp.gameState == gp.exchangeState) {
             drawExchangeScreen();
+        }
+        // SLEEP STATE
+        if (gp.gameState == gp.sleepState) {
+            drawSleepScreen();
         }
     }
 
@@ -486,14 +489,15 @@ public class UI {
         // DRAW ENTITY'S ITEMS
         for (int i = 0; i < entity.inventory.size(); i++) {
             // EQUIP CURSOR
-            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield) {
+            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield
+                    || entity.inventory.get(i) == entity.currentLight) {
                 g2.setColor(new Color(240, 190, 90));
                 g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
             }
             g2.drawImage(entity.inventory.get(i).down1, slotX, slotY, null);
             // DISPLAY AMOUNT
             if (entity.inventory.get(i).amount > 1) {
-                g2.setFont(g2.getFont().deriveFont(32f));
+                g2.setFont(g2.getFont().deriveFont(24f));
                 int amountX;
                 int amountY;
                 String s = "" + entity.inventory.get(i).amount;
@@ -1048,6 +1052,27 @@ public class UI {
             }
         }
         gp.keyH.enterPressed = false;
+    }
+
+    public void drawSleepScreen() {
+        counter++;
+        if (counter < 120) {
+            gp.eManager.lighting.filterAlpha += 0.01f;
+            if (gp.eManager.lighting.filterAlpha > 1f) {
+                gp.eManager.lighting.filterAlpha = 1f;
+            }
+        }
+        if (counter >= 120) {
+            gp.eManager.lighting.filterAlpha -= 0.01f;
+            if (gp.eManager.lighting.filterAlpha < 0f) {
+                gp.eManager.lighting.filterAlpha = 0f;
+                counter = 0;
+                gp.eManager.lighting.dayState = gp.eManager.lighting.day;
+                gp.eManager.lighting.dayCounter = 0;
+                gp.gameState = gp.playState;
+                gp.player.getPlayerImage();
+            }
+        }
     }
 
     public int getItemIndexOnSlot(int slotCol, int slotRow) {
