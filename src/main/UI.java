@@ -1,7 +1,6 @@
 package main;
 
 import entity.Entity;
-import object.OBJ_Chest;
 import object.OBJ_Coin_Bronze;
 import object.OBJ_Heart;
 import object.OBJ_ManaCrystal;
@@ -486,7 +485,8 @@ public class UI {
         // DRAW ENTITY'S ITEMS
         for (int i = 0; i < entity.inventory.size(); i++) {
             // EQUIP CURSOR
-            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield) {
+            if (entity.inventory.get(i) == entity.currentWeapon || entity.inventory.get(i) == entity.currentShield
+                    || entity.inventory.get(i) == entity.currentLight) {
                 g2.setColor(new Color(240, 190, 90));
                 g2.fillRoundRect(slotX, slotY, gp.tileSize, gp.tileSize, 10, 10);
             }
