@@ -5,15 +5,16 @@ import entity.Entity;
 import entity.Player;
 import entity.Projectile;
 import environment.EnvironmentManager;
+import tile.Map;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class GamePanel extends JPanel implements Runnable {
     // SCREEN SETTINGS
@@ -53,6 +54,7 @@ public class GamePanel extends JPanel implements Runnable {
     Config config = new Config(this);
     public PathFinder pFinder = new PathFinder(this);
     EnvironmentManager eManager = new EnvironmentManager(this);
+    Map map = new Map(this);
     Thread gameThread;
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
@@ -76,6 +78,7 @@ public class GamePanel extends JPanel implements Runnable {
     public final int tradeState = 8;
     public final int exchangeState = 9;
     public final int sleepState = 10;
+    public final int mapState = 11;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -261,6 +264,10 @@ public class GamePanel extends JPanel implements Runnable {
         // TITLE SCREEN
         if (gameState == titleState) {
             ui.draw(g2);
+        }
+        // MAP SCREEN
+        else if (gameState == mapState) {
+            map.drawFullMapScreen(g2);
         } else {
             // TILE
             tileM.draw(g2);
@@ -329,6 +336,8 @@ public class GamePanel extends JPanel implements Runnable {
                 g2.drawString("CollisionOn: " + player.collisionOn, x, y + lineHeight);
                 System.out.println("Draw Time: " + passed);
             }
+            // MINI MAP
+            map.drawMiniMap(g2);
             // UI
             ui.draw(g2);
         }
