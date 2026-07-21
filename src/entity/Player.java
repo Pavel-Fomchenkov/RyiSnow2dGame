@@ -2,7 +2,9 @@ package entity;
 
 import main.GamePanel;
 import main.KeyHandler;
-import object.*;
+import object.OBJ_Fireball;
+import object.OBJ_Shield_Wood;
+import object.OBJ_Sword_Normal;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -95,6 +97,8 @@ public class Player extends Entity {
 
     public int getAttack() {
         attackArea = currentWeapon.attackArea;
+        motion1Duration = currentWeapon.motion1Duration;
+        motion2Duration = currentWeapon.motion2Duration;
         return strength * currentWeapon.attackValue;
     }
 
@@ -264,62 +268,6 @@ public class Player extends Entity {
         }
     }
 
-    public void attacking() {
-        spriteCounter++;
-        if (spriteCounter <= 10) {
-            spriteNum = 1;
-        } else if (spriteCounter <= 20) {
-            spriteNum = 2;
-
-            // Save the current worldX, worldY, solidArea
-            int currentWorldX = worldX;
-            int currentWorldY = worldY;
-            int solidAreaWidth = solidArea.width;
-            int solidAreaHeight = solidArea.height;
-
-            // Adjust player's worldX/Y for the attackArea
-            switch (direction) {
-                case "up":
-                    worldX += (solidAreaWidth - attackArea.width) / 2;
-                    worldY -= attackArea.height;
-                    break;
-                case "down":
-                    worldX += (solidAreaWidth - attackArea.width) / 2;
-                    worldY += attackArea.height;
-                    break;
-                case "left":
-                    worldX -= attackArea.width;
-                    worldY -= (solidAreaHeight - attackArea.height) / 2;
-                    break;
-                case "right":
-                    worldX += attackArea.width;
-                    worldY -= (solidAreaHeight - attackArea.height) / 2;
-                    break;
-            }
-            // attackArea becomes solidArea
-            solidArea.width = attackArea.width;
-            solidArea.height = attackArea.height;
-            // Check monster collision with the updated worldX, worldY and solidArea
-            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
-            damageMonster(monsterIndex, attack, currentWeapon.knockBackPower);
-            // Check interactive tile collision
-            int iTileIndex = gp.cChecker.checkEntity(this, gp.iTile);
-            damageInteractiveTile(iTileIndex);
-            // Check projectile collision to parry projectile
-            int projectileIndex = gp.cChecker.checkEntity(this, gp.projectile);
-            damageProjectile(projectileIndex);
-            // After checking collision, restore the original data
-            worldX = currentWorldX;
-            worldY = currentWorldY;
-            solidArea.width = solidAreaWidth;
-            solidArea.height = solidAreaHeight;
-        } else {
-            spriteNum = 1;
-            spriteCounter = 0;
-            attacking = false;
-        }
-    }
-
     public void pickUpObject(int i) {
         if (i == 999) {
             lastFullInventoryItem = null;
@@ -376,12 +324,12 @@ public class Player extends Entity {
         }
     }
 
-    public void damageMonster(int i, int attack, int knockBackPower) {
+    public void damageMonster(int i, Entity attacker, int attack, int knockBackPower) {
         if (i != 999) {
             if (!gp.monster[gp.currentMap][i].invincible) {
                 gp.playSE(5);
                 if (knockBackPower > 0) {
-                    knockBack(gp.monster[gp.currentMap][i], knockBackPower);
+                    setKnockBack(gp.monster[gp.currentMap][i], attacker, knockBackPower);
                 }
                 int damage = attack - gp.monster[gp.currentMap][i].defense;
                 if (damage > gp.monster[gp.currentMap][i].life) damage = gp.monster[gp.currentMap][i].life;
@@ -406,12 +354,6 @@ public class Player extends Entity {
                 }
             }
         }
-    }
-
-    public void knockBack(Entity entity, int knockBackPower) {
-        entity.direction = direction;
-        entity.speed += knockBackPower;
-        entity.knockBack = true;
     }
 
     public void damageInteractiveTile(int i) {
